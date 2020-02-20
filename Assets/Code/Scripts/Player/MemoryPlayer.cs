@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 namespace Memory.Player
 {
 
@@ -20,12 +21,11 @@ public class MemoryPlayer : MonoBehaviour
 
                 if (card != null)
                 {
-                    card.OnSelect();
+                    card.Select();
                 }
             }
         }
     }
 }
-
 
 }

@@ -5,7 +5,6 @@ using UnityEngine;
 namespace Memory.Framework
 {
 
-
 public class MemoryGameManager : MonoBehaviour
 {
     [SerializeField]
@@ -29,7 +28,6 @@ public class MemoryGameManager : MonoBehaviour
     {
 
     }
-}
-
+}   
 
 }
