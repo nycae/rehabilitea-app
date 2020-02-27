@@ -12,6 +12,9 @@ public class MemorySpawnManager : MonoBehaviour
     private GameObject[]    cardClasses;
 
     [SerializeField]
+    private GameObject      cardParent;
+
+    [SerializeField]
     private Vector3         topRightCorner;
 
     [SerializeField]
@@ -54,7 +57,9 @@ public class MemorySpawnManager : MonoBehaviour
                     classNumber = Random.Range(0, classCount.Count);
                 }
 
-                Instantiate(cardClasses[classNumber], spawnPosition, Quaternion.identity);
+                var newCard = Instantiate(cardClasses[classNumber], spawnPosition, Quaternion.identity);
+
+                newCard.transform.parent = cardParent.transform;
 
                 classCount[classNumber]++;
                 spawnPosition.x += widthOffset;

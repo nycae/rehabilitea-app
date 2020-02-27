@@ -27,8 +27,9 @@ public class MemoryGameManager : MonoBehaviour
 
     static public event EndGame             OnEndGame;
 
+    private int                             currentPairs        = 0;
 
-    private int                             remainingPairs      = 0;
+    private int                             targetPairs         = 0;
 
     [SerializeField]
     private Difficulty                      gameDifficulty      = Difficulty.Medium;
@@ -53,7 +54,7 @@ public class MemoryGameManager : MonoBehaviour
             difficultySpawns.Add(item.diff, item.cardSpawns);
         }
 
-        remainingPairs = difficultySpawns[gameDifficulty] / 2;
+        targetPairs = difficultySpawns[gameDifficulty] / 2;
 
         spawnManager.SpawnCards(difficultySpawns[gameDifficulty]);    
     }
@@ -64,6 +65,8 @@ public class MemoryGameManager : MonoBehaviour
         {
             card.OnSelect += OnCardTurned;
         }
+        
+        OnPair += AttendPair;
     }
 
     private void OnCardTurned(NPC.MemoryCard card)
@@ -78,9 +81,8 @@ public class MemoryGameManager : MonoBehaviour
             {
                 OnPair.Invoke(true);
                 DeselectCards();
-                remainingPairs--;
 
-                if (remainingPairs <= 0)
+                if (currentPairs == targetPairs)
                 {
                     OnEndGame.Invoke();
                 }
@@ -112,8 +114,18 @@ public class MemoryGameManager : MonoBehaviour
     {
         if (wasSuccessful)
         {
-            remainingPairs--;
+            currentPairs++;
         }
+    }
+
+    public int GetTargetScore()
+    {
+        return targetPairs;
+    }
+
+    public int GetCurrentScore()
+    {
+        return currentPairs;
     }
 }   
 
