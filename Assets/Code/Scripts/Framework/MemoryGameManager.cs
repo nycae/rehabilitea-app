@@ -49,7 +49,7 @@ public class MemoryGameManager : MonoBehaviour
 
     private void Awake() 
     {
-        foreach(var item in difficultySpawnList)
+        foreach (var item in difficultySpawnList)
         {
             difficultySpawns.Add(item.diff, item.cardSpawns);
         }
@@ -65,7 +65,7 @@ public class MemoryGameManager : MonoBehaviour
         {
             card.OnSelect += OnCardTurned;
         }
-        
+
         OnPair += AttendPair;
     }
 
