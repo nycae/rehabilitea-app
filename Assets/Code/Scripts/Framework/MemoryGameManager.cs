@@ -7,24 +7,142 @@ namespace Memory.Framework
 
 public class MemoryGameManager : MonoBehaviour
 {
-    [SerializeField]
-    public Vector3          topRightCorner;
+    public enum Difficulty
+    {
+        Easy, Medium, Hard, MAX
+    }
+
+    [System.Serializable]
+    public struct DifficultyAssign
+    {
+        public Difficulty diff;
+        public int cardSpawns;
+    }
+
+    public delegate void                    EvaluatePair(bool wasSuccessful);
+
+    static public event EvaluatePair        OnPair;
+
+    public delegate void                    EndGame();
+
+    static public event EndGame             OnEndGame;
+
+    private int                             currentPairs        = 0;
+
+    private int                             targetPairs         = 0;
+
+    [SerializeField, Range(1f, 5f)]
+    private float                           flipWait            = 0;
 
     [SerializeField]
-    public Vector3          bottomLeftCorner;
+    private Difficulty                      gameDifficulty      = Difficulty.Medium;
 
     [SerializeField]
-    public NPC.MemoryCard[] cards;
+    private MemorySpawnManager              spawnManager        = null;
 
     [SerializeField]
-    public float            widthOffset;
+    private DifficultyAssign[]              difficultySpawnList;
 
     [SerializeField]
-    public float            heightOffset;
+    private Dictionary<Difficulty, int>     difficultySpawns    = new Dictionary<Difficulty, int>();
 
-    private int             numberOfCarts;
+    private NPC.MemoryCard                  selectedCard        = null;
 
-    void SpawnCards()
+    private NPC.MemoryCard                  secondCard          = null;
+
+    private void Awake() 
+    {
+        foreach (var item in difficultySpawnList)
+        {
+            difficultySpawns.Add(item.diff, item.cardSpawns);
+        }
+
+        targetPairs = difficultySpawns[gameDifficulty] / 2;
+
+        spawnManager.SpawnCards(difficultySpawns[gameDifficulty]);    
+    }
+
+    private void Start()
+    {
+        foreach (NPC.MemoryCard card in FindObjectsOfType<NPC.MemoryCard>())
+        {
+            card.OnSelect += OnCardTurned;
+        }
+
+        OnPair += AttendPair;
+        OnEndGame += LoadMainMenu;
+    }
+
+    private void OnCardTurned(NPC.MemoryCard card)
+    {
+        if (selectedCard == null)
+        {
+            selectedCard = card;
+        }
+        else
+        {
+            secondCard = card;
+            CheckCards();
+        }
+    }
+
+    private void CheckCards()
+    {
+        if (secondCard.figure == selectedCard.figure)
+        {
+            OnPair.Invoke(true);
+            DeselectCards();
+
+            if (currentPairs == targetPairs)
+            {
+                OnEndGame.Invoke();
+            }
+        }
+        else
+        {
+            OnPair.Invoke(false);
+            Invoke("FlipCards", GetWaitTime());
+        }
+    }
+
+    private void FlipCards()
+    {
+        selectedCard.TurnArround();
+        secondCard.TurnArround();
+
+        DeselectCards();
+    }
+
+    void DeselectCards()
+    {
+        selectedCard = null;
+        selectedCard = null;
+    }
+
+    void AttendPair(bool wasSuccessful)
+    {
+        if (wasSuccessful)
+        {
+            currentPairs++;
+        }
+    }
+
+    public int GetTargetScore()
+    {
+        return targetPairs;
+    }
+
+    public int GetCurrentScore()
+    {
+        return currentPairs;
+    }
+
+    public float GetWaitTime()
+    {
+        return NPC.MemoryCard.timeToTurn * flipWait;
+    }
+
+    private void LoadMainMenu()
     {
 
     }

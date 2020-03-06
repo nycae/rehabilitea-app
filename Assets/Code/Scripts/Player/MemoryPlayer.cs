@@ -8,8 +8,38 @@ namespace Memory.Player
 
 public class MemoryPlayer : MonoBehaviour
 {
+
+    [SerializeField, Range(0.1f, 10.0f)]
+    private float   clickBlockTime;
+
+    private bool    isClickBlocked = false;
+
+    void Start()
+    {
+        Framework.MemoryGameManager.OnPair += OnPair;
+    }
+
+    private void OnPair(bool wasSucessfull)
+    {
+        if (!wasSucessfull)
+        {
+            isClickBlocked = true;
+            Invoke("UnblockMouse", clickBlockTime);
+        }
+    }
+
+    private void UnblockMouse()
+    {
+        isClickBlocked  = false;
+    }
+
     void Update()
     {
+        if (isClickBlocked)
+        {
+            return;
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
