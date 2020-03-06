@@ -8,35 +8,29 @@ namespace Memory.Player
 
 public class MemoryPlayer : MonoBehaviour
 {
-    private int cardCount = 0;
 
-    private bool isClickBlocked = false;
+    [SerializeField, Range(0.1f, 10.0f)]
+    private float   clickBlockTime;
+
+    private bool    isClickBlocked = false;
 
     void Start()
     {
-        foreach (var card in FindObjectsOfType<NPC.MemoryCard>())
-        {
-            card.OnSelect += OnCardSelected;
-        }
+        Framework.MemoryGameManager.OnPair += OnPair;
     }
 
-    void OnCardSelected(NPC.MemoryCard card)
+    private void OnPair(bool wasSucessfull)
     {
-        cardCount++;
-
-        if (cardCount >= 2)
+        if (!wasSucessfull)
         {
             isClickBlocked = true;
-
-            Invoke("UnblockMouse", NPC.MemoryCard.timeToTurn * 1.5f);
+            Invoke("UnblockMouse", clickBlockTime);
         }
     }
-
 
     private void UnblockMouse()
     {
         isClickBlocked  = false;
-        cardCount       = 0;
     }
 
     void Update()

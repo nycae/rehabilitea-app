@@ -31,6 +31,9 @@ public class MemoryGameManager : MonoBehaviour
 
     private int                             targetPairs         = 0;
 
+    [SerializeField, Range(1f, 5f)]
+    private float                           flipWait            = 0;
+
     [SerializeField]
     private Difficulty                      gameDifficulty      = Difficulty.Medium;
 
@@ -67,6 +70,7 @@ public class MemoryGameManager : MonoBehaviour
         }
 
         OnPair += AttendPair;
+        OnEndGame += LoadMainMenu;
     }
 
     private void OnCardTurned(NPC.MemoryCard card)
@@ -77,26 +81,31 @@ public class MemoryGameManager : MonoBehaviour
         }
         else
         {
-            if (card.figure == selectedCard.figure)
-            {
-                OnPair.Invoke(true);
-                DeselectCards();
-
-                if (currentPairs == targetPairs)
-                {
-                    OnEndGame.Invoke();
-                }
-            }
-            else
-            {
-                OnPair.Invoke(false);
-                secondCard = card;
-                Invoke("FlipCards", NPC.MemoryCard.timeToTurn * 1.5f);
-            }
+            secondCard = card;
+            CheckCards();
         }
     }
 
-    void FlipCards()
+    private void CheckCards()
+    {
+        if (secondCard.figure == selectedCard.figure)
+        {
+            OnPair.Invoke(true);
+            DeselectCards();
+
+            if (currentPairs == targetPairs)
+            {
+                OnEndGame.Invoke();
+            }
+        }
+        else
+        {
+            OnPair.Invoke(false);
+            Invoke("FlipCards", GetWaitTime());
+        }
+    }
+
+    private void FlipCards()
     {
         selectedCard.TurnArround();
         secondCard.TurnArround();
@@ -126,6 +135,16 @@ public class MemoryGameManager : MonoBehaviour
     public int GetCurrentScore()
     {
         return currentPairs;
+    }
+
+    public float GetWaitTime()
+    {
+        return NPC.MemoryCard.timeToTurn * flipWait;
+    }
+
+    private void LoadMainMenu()
+    {
+
     }
 }   
 
