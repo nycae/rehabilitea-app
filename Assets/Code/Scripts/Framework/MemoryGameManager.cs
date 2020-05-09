@@ -1,22 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Global.Framework;
 
 namespace Memory.Framework
 {
 
 public class MemoryGameManager : MonoBehaviour
 {
-    public enum Difficulty
-    {
-        Easy, Medium, Hard, MAX
-    }
 
     [System.Serializable]
     public struct DifficultyAssign
     {
-        public Difficulty diff;
-        public int cardSpawns;
+        public Difficulty   diff;
+        public int          cardSpawns;
     }
 
     public delegate void                    EvaluatePair(bool wasSuccessful);
@@ -31,9 +28,6 @@ public class MemoryGameManager : MonoBehaviour
 
     private int                             targetPairs         = 0;
 
-    [SerializeField, Range(1f, 5f)]
-    private float                           flipWait            = 0;
-
     [SerializeField]
     private Difficulty                      gameDifficulty      = Difficulty.Medium;
 
@@ -41,7 +35,7 @@ public class MemoryGameManager : MonoBehaviour
     private MemorySpawnManager              spawnManager        = null;
 
     [SerializeField]
-    private DifficultyAssign[]              difficultySpawnList;
+    private DifficultyAssign[]              difficultySpawnList = new DifficultyAssign[0];
 
     [SerializeField]
     private Dictionary<Difficulty, int>     difficultySpawns    = new Dictionary<Difficulty, int>();
@@ -69,18 +63,20 @@ public class MemoryGameManager : MonoBehaviour
             card.OnSelect += OnCardTurned;
         }
 
-        OnPair += AttendPair;
-        OnEndGame += LoadMainMenu;
+        OnPair      += AttendPair;
+        OnEndGame   += LoadMainMenu;
     }
 
     private void OnCardTurned(NPC.MemoryCard card)
     {
+        if (card == selectedCard) return;
+        
         if (selectedCard == null)
         {
             selectedCard = card;
         }
         else
-        {
+        {            
             secondCard = card;
             CheckCards();
         }
@@ -88,7 +84,7 @@ public class MemoryGameManager : MonoBehaviour
 
     private void CheckCards()
     {
-        if (secondCard.figure == selectedCard.figure)
+        if (secondCard.GetFigure() == selectedCard.GetFigure())
         {
             OnPair.Invoke(true);
             DeselectCards();
@@ -139,12 +135,12 @@ public class MemoryGameManager : MonoBehaviour
 
     public float GetWaitTime()
     {
-        return NPC.MemoryCard.timeToTurn * flipWait;
+        return NPC.MemoryCard.timeToTurn;
     }
 
     private void LoadMainMenu()
     {
-
+        Debug.Log("Loading main menu");
     }
 }   
 

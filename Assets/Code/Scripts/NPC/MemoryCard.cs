@@ -7,39 +7,19 @@ namespace Memory.NPC
 
 public class MemoryCard : MonoBehaviour
 {
-    public enum Figure
-    {
-        RedAce,
-        BlackAce,
-        RedTwo,
-        BlackTwo,
-        RedThree,
-        BlackThree,
-        RedFour,
-        BlackFour,
-        RedFive,
-        BlackFive,
-        RedSix,
-        BlackSix,
-        RedSeven,
-        BlackSeven,
-        RedEight,
-        BlackEigh,
-        MAX
-    }
 
     public delegate void    Selected(MemoryCard card);
 
     public event Selected   OnSelect;
 
     [SerializeField]
-    public Figure           figure;
+    private GameObject      figure          = null;
 
     [HideInInspector]
-    public bool             needsToTurn     = false;
+    public bool             isTurning       = false;
 
     [Range(0.1f, 5.0f)]
-    public static float    timeToTurn      = 0.5f;
+    public static float     timeToTurn      = 0.5f;
 
     [HideInInspector]
     private float           beginTurnTime   = 0.0f;
@@ -48,11 +28,12 @@ public class MemoryCard : MonoBehaviour
     private bool            isHidden        = true;
 
     [HideInInspector]
-    private static float    degreesToTurn   = 180f;
+    private static float    degreesToTurn   = 180.0f;
+
 
     public void Select()
     {
-        if (isHidden)
+        if (isHidden && !isTurning)
         {
             TurnArround();
             OnSelect.Invoke(this);
@@ -62,18 +43,18 @@ public class MemoryCard : MonoBehaviour
     public void TurnArround()
     {
         beginTurnTime   = Time.time;
-        needsToTurn     = true;
+        isTurning       = true;
         isHidden        = !isHidden;
     }
 
     private void Update()
     {
-        if (needsToTurn == true)
+        if (isTurning == true)
         {
             if (Time.time > beginTurnTime + timeToTurn)
             {
-                needsToTurn = false;
-                gameObject.transform.rotation = isHidden 
+                isTurning                       = false;
+                gameObject.transform.rotation   = isHidden 
                     ? Quaternion.Euler(0, 0, 0) 
                     : Quaternion.Euler(0, degreesToTurn, 0);
             }
@@ -84,6 +65,15 @@ public class MemoryCard : MonoBehaviour
         }
     }
 
+    public Sprite GetFigure()
+    {
+        return figure.GetComponent<SpriteRenderer>().sprite;
+    }
+
+    public void SetSprite(Sprite newSprite)
+    {
+        figure.GetComponent<SpriteRenderer>().sprite = newSprite;
+    }
 }
 
 }

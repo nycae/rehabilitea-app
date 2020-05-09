@@ -9,10 +9,7 @@ namespace Memory.Player
 public class MemoryPlayer : MonoBehaviour
 {
 
-    [SerializeField, Range(0.1f, 10.0f)]
-    private float   clickBlockTime;
-
-    private bool    isClickBlocked = false;
+    private bool    isClickBlocked  = false;
 
     void Start()
     {
@@ -24,7 +21,7 @@ public class MemoryPlayer : MonoBehaviour
         if (!wasSucessfull)
         {
             isClickBlocked = true;
-            Invoke("UnblockMouse", clickBlockTime);
+            Invoke("UnblockMouse", NPC.MemoryCard.timeToTurn);
         }
     }
 
@@ -35,10 +32,7 @@ public class MemoryPlayer : MonoBehaviour
 
     void Update()
     {
-        if (isClickBlocked)
-        {
-            return;
-        }
+        if (isClickBlocked) return;
 
         if (Input.GetMouseButtonDown(0))
         {

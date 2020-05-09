@@ -9,13 +9,13 @@ namespace Memory.UI
 public class MemoryScoreUI : MonoBehaviour
 {
     [SerializeField]
-    private Framework.MemoryGameManager manager;
+    private Framework.MemoryGameManager manager = null;
 
     [SerializeField]
-    private Text currentScoreText;
+    private Text currentScoreText               = null;
 
     [SerializeField]
-    private Text targetScoreText;
+    private Text targetScoreText                = null;
 
     void Start()
     {
