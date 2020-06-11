@@ -5,27 +5,25 @@ using UnityEngine;
 
 namespace Bubbles.Player
 {
-
-public class BubblesPlayer : MonoBehaviour
-{
-    void Update()
+    public class BubblesPlayer : MonoBehaviour
     {
-        if (Input.GetMouseButton(0))
+        void Update()
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit))
+            if (Input.GetMouseButton(0))
             {
-                NPC.Bubble bubble = hit.collider.gameObject.GetComponent<NPC.Bubble>();
+                Ray         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit  hit;
 
-                if (bubble)
+                if (Physics.Raycast(ray, out hit))
                 {
-                    bubble.Select();
+                    NPC.Bubble bubble = hit.collider.gameObject.GetComponent<NPC.Bubble>();
+
+                    if (bubble)
+                    {
+                        bubble.Select();
+                    }
                 }
             }
         }
     }
-}
-
 }

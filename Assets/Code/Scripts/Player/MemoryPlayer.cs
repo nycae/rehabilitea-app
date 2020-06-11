@@ -2,54 +2,50 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
 namespace Memory.Player
 {
-
-public class MemoryPlayer : MonoBehaviour
-{
-
-    private bool    isClickBlocked  = false;
-
-    void Start()
+    public class MemoryPlayer : MonoBehaviour
     {
-        Framework.MemoryGameManager.OnPair += OnPair;
-    }
+        private bool isClickBlocked = false;
 
-    private void OnPair(bool wasSucessfull)
-    {
-        if (!wasSucessfull)
+        void Start()
         {
-            isClickBlocked = true;
-            Invoke("UnblockMouse", NPC.MemoryCard.timeToTurn);
+            Framework.MemoryGameManager.OnPair += OnPair;
         }
-    }
 
-    private void UnblockMouse()
-    {
-        isClickBlocked  = false;
-    }
-
-    void Update()
-    {
-        if (isClickBlocked) return;
-
-        if (Input.GetMouseButtonDown(0))
+        private void OnPair(bool wasSucessfull)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit))
+            if (!wasSucessfull)
             {
-                NPC.MemoryCard card = hit.collider.gameObject.GetComponent<NPC.MemoryCard>();
+                isClickBlocked = true;
+                Invoke("UnblockMouse", NPC.MemoryCard.timeToTurn);
+            }
+        }
 
-                if (card != null)
+        private void UnblockMouse()
+        {
+            isClickBlocked = false;
+        }
+
+        void Update()
+        {
+            if (isClickBlocked) return;
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                Ray         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit  hit;
+
+                if (Physics.Raycast(ray, out hit))
                 {
-                    card.Select();
+                    NPC.MemoryCard card = hit.collider.gameObject.GetComponent<NPC.MemoryCard>();
+
+                    if (card != null)
+                    {
+                        card.Select();
+                    }
                 }
             }
         }
     }
-}
-
 }

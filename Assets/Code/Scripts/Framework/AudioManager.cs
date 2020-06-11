@@ -4,33 +4,30 @@ using UnityEngine.Audio;
 
 namespace Framework
 {
-
-public class AudioManager : MonoBehaviour
-{
-
-    [SerializeField]
-    public Dictionary<string, Environment.Sound> sounds;
-
-    void Awake() 
+    public class AudioManager : MonoBehaviour
     {
-        foreach (var sound in sounds)
+        [SerializeField]
+        public Dictionary<string, Environment.Sound> sounds;
+
+        void Awake()
         {
-            sound.Value.audioSource         = gameObject.GetComponent<AudioSource>();
-            sound.Value.audioSource.clip    = sound.Value.audioClip;
-            sound.Value.audioSource.volume  = sound.Value.volume;
-            sound.Value.audioSource.pitch   = sound.Value.pitch;
+            foreach (var sound in sounds)
+            {
+                sound.Value.audioSource         = gameObject.GetComponent<AudioSource>();
+                sound.Value.audioSource.clip    = sound.Value.audioClip;
+                sound.Value.audioSource.volume  = sound.Value.volume;
+                sound.Value.audioSource.pitch   = sound.Value.pitch;
+            }
+        }
+
+        void PlaySound(string key)
+        {
+            Environment.Sound sound;
+
+            if (sounds.TryGetValue(key, out sound))
+            {
+                sound.audioSource.Play();
+            }
         }
     }
-
-    void PlaySound(string key)
-    {
-        Environment.Sound sound;
-
-        if (sounds.TryGetValue(key, out sound))
-        {
-            sound.audioSource.Play();
-        }
-    }
-}
-
 }
