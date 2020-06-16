@@ -3,18 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Memory.UI
+namespace Memory
 {
     public class MemoryScoreUI : MonoBehaviour
     {
-        [SerializeField]
-        private Framework.MemoryGameManager manager             = null;
-
-        [SerializeField]
-        private Text                        currentScoreText   = null;
-
-        [SerializeField]
-        private Text                        targetScoreText     = null;
+        [SerializeField] private MemoryGameMode manager             = null;
+        [SerializeField] private Text           currentScoreText    = null;
+        [SerializeField] private Text           targetScoreText     = null;
 
         void Start()
         {

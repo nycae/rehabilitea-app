@@ -1,49 +1,38 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using RehabiliTEA;
 
-namespace Memory.Player
+namespace Memory
 {
-    public class MemoryPlayer : MonoBehaviour
+    public class MemoryPlayer : Player
     {
-        private bool isClickBlocked = false;
-
         void Start()
         {
-            Framework.MemoryGameManager.OnPair += OnPair;
+            SecondsWhenBlocked      = MemoryCard.TimeToTurn * 1.5f;
+            MemoryGameMode.OnPair  += OnPair;
         }
 
         private void OnPair(bool wasSucessfull)
         {
             if (!wasSucessfull)
             {
-                isClickBlocked = true;
-                Invoke("UnblockMouse", NPC.MemoryCard.timeToTurn);
+                Block();
             }
         }
 
-        private void UnblockMouse()
+        protected override void CastRay()
         {
-            isClickBlocked = false;
-        }
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
 
-        void Update()
-        {
-            if (isClickBlocked) return;
-
-            if (Input.GetMouseButtonDown(0))
+            if (Physics.Raycast(ray, out hit))
             {
-                Ray         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit  hit;
+                MemoryCard card = hit.collider.gameObject.GetComponent<MemoryCard>();
 
-                if (Physics.Raycast(ray, out hit))
+                if (card)
                 {
-                    NPC.MemoryCard card = hit.collider.gameObject.GetComponent<NPC.MemoryCard>();
-
-                    if (card != null)
-                    {
-                        card.Select();
-                    }
+                    card.Select();
                 }
             }
         }

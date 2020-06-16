@@ -3,33 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using RehabiliTEA;
 
-namespace Memory.Framework
+namespace Memory
 {
     public class MemorySpawnManager : MonoBehaviour
     {
-        [SerializeField]
-        private AssetManager    assetManager    = null;
-
-        [SerializeField]
-        private GameObject      cardClass       = null;
-
-        [SerializeField]
-        private GameObject      cardParent      = null;
-
-        [SerializeField]
-        private Vector3         topRightCorner  = new Vector3();
-
-        [SerializeField]
-        private float           widthOffset     = 0.0f;
-
-        [SerializeField]
-        private float           heightOffset    = 0.0f;
-
-        [SerializeField]
-        private int             cardsPerColumn  = 0;
-
-        [SerializeField]
-        private int             cardsPerRow     = 0;
+        [SerializeField] private AssetManager   assetManager    = null;
+        [SerializeField] private GameObject     cardClass       = null;
+        [SerializeField] private GameObject     cardParent      = null;
+        [SerializeField] private Vector3        topRightCorner  = new Vector3();
+        [SerializeField] private float          widthOffset     = 0.0f;
+        [SerializeField] private float          heightOffset    = 0.0f;
+        [SerializeField] private int            cardsPerColumn  = 0;
+        [SerializeField] private int            cardsPerRow     = 0;
 
 
         public void SpawnCards(int cardCount)
@@ -73,7 +58,7 @@ namespace Memory.Framework
                     // We create the card based on the class, assign it to the father (so we can select all cards easily) and apply the transform
                     var newCard = Instantiate(cardClass, spawnPosition, Quaternion.identity);
 
-                    newCard.GetComponent<NPC.MemoryCard>().SetSprite(cardType[classNumber]);
+                    newCard.GetComponent<MemoryCard>().GetSpriteRenderer().sprite = cardType[classNumber];
                     newCard.transform.parent = cardParent.transform;
 
                     classCount[classNumber]++;

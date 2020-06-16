@@ -1,31 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using RehabiliTEA;
 
-namespace Memory.NPC
+namespace Memory
 {
-    public class MemoryCard : MonoBehaviour
+    public class MemoryCard : ClickableSprite
     {
-        public delegate void    Selected(MemoryCard card);
-        public event            Selected        OnSelect;
-
-        [SerializeField]
-        private GameObject      figure          = null;
-
-        [HideInInspector]
-        public bool             isTurning       = false;
-
-        [Range(0.1f, 5.0f)]
-        public static float     timeToTurn      = 0.5f;
-
-        [HideInInspector]
-        private float           beginTurnTime   = 0.0f;
-
-        [SerializeField]
+        private bool            isTurning       = false;
         private bool            isHidden        = true;
+        private float           beginTurnTime   = 0.0f;
+        public static float     TimeToTurn      = 0.5f;
+        private static float    DegreesToTurn   = 180.0f;
 
-        [HideInInspector]
-        private static float    degreesToTurn   = 180.0f;
+        public delegate void    Selected(MemoryCard card);
+        public event Selected   OnSelect;
 
         public void Select()
         {
@@ -38,37 +27,27 @@ namespace Memory.NPC
 
         public void TurnArround()
         {
-            beginTurnTime = Time.time;
-            isTurning = true;
-            isHidden = !isHidden;
+            beginTurnTime   = Time.time;
+            isTurning       = true;
+            isHidden        = !isHidden;
         }
 
         private void Update()
         {
             if (isTurning == true)
             {
-                if (Time.time > beginTurnTime + timeToTurn)
+                if (Time.time > beginTurnTime + TimeToTurn)
                 {
                     isTurning = false;
                     gameObject.transform.rotation = isHidden
-                        ? Quaternion.Euler(0, 0, 0)
-                        : Quaternion.Euler(0, degreesToTurn, 0);
+                        ? Quaternion.Euler(0f,  0f,     0f)
+                        : Quaternion.Euler(0f,  180f,   0f);
                 }
                 else
                 {
-                    gameObject.transform.Rotate(transform.up, Time.deltaTime * degreesToTurn / timeToTurn);
+                    gameObject.transform.Rotate(transform.up, Time.deltaTime * DegreesToTurn / TimeToTurn);
                 }
             }
-        }
-
-        public Sprite GetFigure()
-        {
-            return figure.GetComponent<SpriteRenderer>().sprite;
-        }
-
-        public void SetSprite(Sprite newSprite)
-        {
-            figure.GetComponent<SpriteRenderer>().sprite = newSprite;
         }
     }
 }

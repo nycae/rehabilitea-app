@@ -5,7 +5,7 @@ using RehabiliTEA;
 
 namespace RehabiliTEA.Bubbles
 {
-    public class BubblesGameManager : GameMode
+    public class BubblesGameMode : GameMode
     {
         [System.Serializable]
         private class DifficultyAssign

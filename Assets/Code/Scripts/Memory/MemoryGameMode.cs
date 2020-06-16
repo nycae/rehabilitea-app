@@ -3,62 +3,56 @@ using System.Collections.Generic;
 using UnityEngine;
 using RehabiliTEA;
 
-namespace Memory.Framework
+namespace Memory
 {
-    public class MemoryGameManager : MonoBehaviour
+    public class MemoryGameMode : GameMode
     {
         [System.Serializable]
-        public struct DifficultyAssign
+        private class DifficultyAssign
         {
-            public Difficulty               diff;
-            public int                      cardSpawns;
+            public Difficulty               diff                = Difficulty.Default;
+            [Range(0, 128)] public int      cardSpawns          = 0;
         }
-
-        [SerializeField]
-        private Difficulty                  gameDifficulty      = Difficulty.Medium;
 
         [SerializeField]
         private MemorySpawnManager          spawnManager        = null;
 
         [SerializeField]
-        private DifficultyAssign[]          difficultySpawnList = new DifficultyAssign[0];
+        private DifficultyAssign[]          difficultySpawnList = null;
 
-        [SerializeField]
-        private Dictionary<Difficulty, int> difficultySpawns    = new Dictionary<Difficulty, int>();
-
-        private NPC.MemoryCard              selectedCard        = null;
-        private NPC.MemoryCard              secondCard          = null;
+        private MemoryCard                  selectedCard        = null;
+        private MemoryCard                  secondCard          = null;
         private int                         currentPairs        = 0;
+        private int                         targetSpawns        = 0;
         private int                         targetPairs         = 0;
         public delegate void                EvaluatePair(bool wasSuccessful);
-        public delegate void                EndGame();
-        static public event                 EvaluatePair        OnPair;
-        static public event                 EndGame             OnEndGame;
+        static public event EvaluatePair    OnPair;
 
-        private void Awake()
-        {
-            foreach (var item in difficultySpawnList)
-            {
-                difficultySpawns.Add(item.diff, item.cardSpawns);
-            }
-
-            targetPairs = difficultySpawns[gameDifficulty] / 2;
-
-            spawnManager.SpawnCards(difficultySpawns[gameDifficulty]);
-        }
 
         private void Start()
         {
-            foreach (NPC.MemoryCard card in FindObjectsOfType<NPC.MemoryCard>())
+            foreach (var item in difficultySpawnList)
+            {
+                if (item.diff == difficulty)
+                {
+                    targetSpawns = item.cardSpawns;
+                    break;
+                }
+            }
+
+            spawnManager.SpawnCards(targetSpawns);
+
+            foreach (MemoryCard card in FindObjectsOfType<MemoryCard>())
             {
                 card.OnSelect += OnCardTurned;
             }
 
-            OnPair += AttendPair;
-            OnEndGame += LoadMainMenu;
+            OnPair             += AttendPair;
+            difficultySpawnList = null;
+            targetPairs         = targetSpawns / 2;
         }
 
-        private void OnCardTurned(NPC.MemoryCard card)
+        private void OnCardTurned(MemoryCard card)
         {
             if (card == selectedCard) return;
 
@@ -75,14 +69,14 @@ namespace Memory.Framework
 
         private void CheckCards()
         {
-            if (secondCard.GetFigure() == selectedCard.GetFigure())
+            if (secondCard.GetSpriteRenderer().sprite == selectedCard.GetSpriteRenderer().sprite)
             {
                 OnPair.Invoke(true);
                 DeselectCards();
 
                 if (currentPairs == targetPairs)
                 {
-                    OnEndGame.Invoke();
+                    FinishGame();
                 }
             }
             else
@@ -126,12 +120,7 @@ namespace Memory.Framework
 
         public float GetWaitTime()
         {
-            return NPC.MemoryCard.timeToTurn;
-        }
-
-        private void LoadMainMenu()
-        {
-            Debug.Log("Loading main menu");
+            return MemoryCard.TimeToTurn * 1.5f;
         }
     }
 }

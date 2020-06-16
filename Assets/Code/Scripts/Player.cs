@@ -34,14 +34,14 @@ namespace RehabiliTEA
             }
         }
 
-        private void CastRay()
+        protected virtual void CastRay()
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
             if (Physics.Raycast(ray, out hit))
             {
-                Sprite sprite = hit.collider.gameObject.GetComponent<SpriteRenderer>().sprite;
+                SpriteRenderer sprite = hit.collider.gameObject.GetComponent<SpriteRenderer>();
 
                 if (sprite)
                 {
