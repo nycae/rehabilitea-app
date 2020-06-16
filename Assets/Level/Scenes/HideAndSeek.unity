@@ -232,33 +232,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cb94e004c985554e82da657c3ae30c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  difficulty: 0
   difficulties:
-  - difficulty: 2
-    rounds: 0
-    figuresToSpawn: 2
-    figureAugment: 0
-    maxRoundsToFail: 0
+  - difficulty: 1
+    rounds: 3
+    figuresToSpawn: 3
+    figureAugment: 1
+    maxRoundsToFail: 20
     secondsToWait: 9
-    timeDecrease: 0
-  - difficulty: 3
-    rounds: 0
-    figuresToSpawn: 4
-    figureAugment: 0
-    maxRoundsToFail: 0
+    timeDecrease: 1
+  - difficulty: 2
+    rounds: 3
+    figuresToSpawn: 5
+    figureAugment: 1
+    maxRoundsToFail: 12
     secondsToWait: 8
-    timeDecrease: 0
-  - difficulty: 4
+    timeDecrease: 1
+  - difficulty: 3
     rounds: 3
     figuresToSpawn: 6
     figureAugment: 1
-    maxRoundsToFail: 20
+    maxRoundsToFail: 10
     secondsToWait: 7
     timeDecrease: 1
   player: {fileID: 980940494}
   assetManager: {fileID: 219822212}
   spawnManager: {fileID: 278952239}
-  difficulty: 4
-  targetSprite: {fileID: 0}
 --- !u!1 &821589222
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,7 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Level/Scenes/Memory.unity
     guid: 3a320f08284911845951c3d7e6518b37
+  - enabled: 1
+    path: Assets/Level/Scenes/HideAndSeek.unity
+    guid: b9753dd52f170884e90c3522a0ad8db6
   m_configObjects: {}
