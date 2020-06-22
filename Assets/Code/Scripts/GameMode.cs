@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 
 namespace RehabiliTEA
 {
     public class GameMode : MonoBehaviour
     {
+        protected Player        player;
         protected int           failedRounds;
         protected int           maxFailedRounds;
         protected Difficulty    difficulty;
@@ -15,13 +17,16 @@ namespace RehabiliTEA
 
         private void Awake()
         {
+            player      = FindObjectOfType<Player>();
             difficulty  = RehabiliTEA.Profile.GetProfile().GetDifficulty();
             OnGameEnd  += CleanupGame;
+
+            Assert.IsNotNull(player);
         }
 
         protected void FinishGame()
         {
-            this.OnGameEnd.Invoke();
+            OnGameEnd.Invoke();
         }
 
         private void CleanupGame()
@@ -52,14 +57,7 @@ namespace RehabiliTEA
 
         private void LoadMainMenu()
         {
-            if (Debug.isDebugBuild)
-            {
-                Debug.Log("Loading main menu");
-            } 
-            else
-            {
-                SceneManager.LoadScene("MainMenu");
-            }   
+            SceneManager.LoadScene("MainMenu"); 
         }
     }
 }

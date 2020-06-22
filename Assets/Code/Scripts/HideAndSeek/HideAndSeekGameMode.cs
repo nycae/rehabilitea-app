@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace RehabiliTEA.HideAndSeek
 {
@@ -22,9 +23,6 @@ namespace RehabiliTEA.HideAndSeek
         private DifficultyAssign[]      difficulties    = null;
 
         [SerializeField]
-        private Player                  player          = null;
-
-        [SerializeField]
         private AssetManager            assetManager    = null;
 
         [SerializeField]
@@ -42,10 +40,9 @@ namespace RehabiliTEA.HideAndSeek
 
         private void Start()
         {
-            Player.SecondsWhenBlocked = secondsToWait;
-
-            Player.OnSelect += Evaluate;
-            OnNewRound      += PrepareRound;
+            Player.SecondsWhenBlocked   = secondsToWait;
+            player.OnSelect            += Evaluate;
+            OnNewRound                 += PrepareRound;
 
             foreach (var assignament in difficulties)
             {
@@ -89,6 +86,8 @@ namespace RehabiliTEA.HideAndSeek
                 else // Otherwise end the game.
                 {
                     spawnManager.DestroyAll();
+                    // Player.OnSelect -= Evaluate;
+                    // OnNewRound      -= PrepareRound;
                     FinishGame();
                 }
             }

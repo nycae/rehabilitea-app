@@ -55,7 +55,7 @@ namespace RehabiliTEA.Bubbles
             difficulties    = null;
             sequence        = new Queue<Sprite>(spawnManager.GenerateSpriteSequences(bubbleCount, distractionCount));
 
-            Player.OnSelect += AttendBubble;
+            player.OnSelect += AttendBubble;
             OnScore         += AddScore;
             OnFail          += AddMiss;
 

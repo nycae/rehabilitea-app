@@ -6,12 +6,12 @@ namespace RehabiliTEA
 {
     public class Player : MonoBehaviour
     {
-        private float               blockTimestamp;
-        private bool                isBlocked = false;
+        private float           blockTimestamp      = 0f;
+        private bool            isBlocked           = false;
+        static public float     SecondsWhenBlocked  = 1;
 
-        static public float         SecondsWhenBlocked = 1;
-        public delegate void        Select(GameObject sprite);
-        static public event Select  OnSelect;
+        public delegate void    Select(GameObject sprite);
+        public event Select     OnSelect;
 
         public void Block()
         {

@@ -89,5 +89,10 @@ namespace RehabiliTEA
         {
             return taskDifficulty;
         }
+
+        public void SetDifficulty(Difficulty newDifficulty)
+        {
+            taskDifficulty = newDifficulty;
+        }
     }
 }
