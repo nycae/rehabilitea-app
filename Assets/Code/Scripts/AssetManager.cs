@@ -21,19 +21,19 @@ namespace RehabiliTEA
             return numbers;
         }
 
-        public Sprite[] GetShapesOfTheGame()
+        public Sprite[] GetShapeAssets()
         {
             return shapes;
         }
 
         public Sprite[] GetRandomColorNumberSequence()
         {
-            int colorIndex              = Random.Range(1, 10);
+            int colorIndex              = Random.Range(1, 9);
             Sprite[] selectedNumbers    = new Sprite[10];
 
-            for (int i = 0; i < numbers.Length; i += 10)
+            for (int i = 0; i < numbers.Length; i += 9)
             {
-                selectedNumbers[i / 10] = numbers[i + colorIndex];
+                selectedNumbers[i / 9] = numbers[i + colorIndex];
             }
 
             return selectedNumbers;
@@ -42,12 +42,12 @@ namespace RehabiliTEA
         public Sprite[] GetRandomMixedColorNumberSequence()
         {
             int colorIndex;
-            Sprite[] selectedNumbers = new Sprite[10];
+            Sprite[] selectedNumbers = new Sprite[9];
 
-            for (int i = 0; i < numbers.Length; i += 10)
+            for (int i = 0; i < numbers.Length; i += 9)
             {
-                colorIndex = Random.Range(1, 10);
-                selectedNumbers[i / 10] = numbers[i + colorIndex];
+                colorIndex = Random.Range(1, 9);
+                selectedNumbers[i / 9] = numbers[i + colorIndex];
             }
 
             return selectedNumbers;

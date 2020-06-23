@@ -22,6 +22,9 @@ namespace RehabiliTEA.Bubbles
         [SerializeField]
         private BubblesSpawnManager     spawnManager        = null;
 
+        [SerializeField]
+        private AudioSource             bubblePopSound      = null;
+
         [SerializeField, Range(0.1f, 10.0f)]
         private float                   spawnDelay          = 0.5f;
 
@@ -66,8 +69,8 @@ namespace RehabiliTEA.Bubbles
         {
             if (sequence.Peek() == bubble.GetComponent<SpriteRenderer>().sprite)
             {
+                bubblePopSound.Play();
                 Destroy(bubble);
-
                 sequence.Dequeue();
                 OnScore.Invoke();
 

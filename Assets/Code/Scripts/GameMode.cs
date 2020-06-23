@@ -9,6 +9,7 @@ namespace RehabiliTEA
     public class GameMode : MonoBehaviour
     {
         protected Player        player;
+        protected AudioManager  audioManager;
         protected int           failedRounds;
         protected int           maxFailedRounds;
         protected Difficulty    difficulty;
@@ -17,11 +18,13 @@ namespace RehabiliTEA
 
         private void Awake()
         {
-            player      = FindObjectOfType<Player>();
-            difficulty  = RehabiliTEA.Profile.GetProfile().GetDifficulty();
-            OnGameEnd  += CleanupGame;
+            player          = FindObjectOfType<Player>();
+            audioManager    = FindObjectOfType<AudioManager>();
+            difficulty      = RehabiliTEA.Profile.GetProfile().GetDifficulty();
+            OnGameEnd      += CleanupGame;
 
             Assert.IsNotNull(player);
+            Assert.IsNotNull(audioManager);
         }
 
         protected void FinishGame()
@@ -36,10 +39,12 @@ namespace RehabiliTEA
                 if (difficulty < Difficulty.Hard) difficulty++;
 
                 PlayGoodEndAnimation();
+                audioManager.PlayPositiveEndgameSound();
             }
             else
             {
                 PlayBadEndAnimation();
+                audioManager.PlayNegativeEndgameSound();
             }
 
             Invoke("LoadMainMenu", 5f);

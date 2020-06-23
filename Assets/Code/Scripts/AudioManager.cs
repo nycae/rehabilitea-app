@@ -1,33 +1,51 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Audio;
+using UnityEngine.Assertions;
 
-namespace Framework
+namespace RehabiliTEA
 {
     public class AudioManager : MonoBehaviour
     {
-        [SerializeField]
-        public Dictionary<string, Environment.Sound> sounds;
+        [SerializeField] private AudioClip[]    encouragementSounds    = null;
+        [SerializeField] private AudioClip[]    rewardingSounds        = null;
+        [SerializeField] private AudioClip      positiveEndgameSound    = null;
+        [SerializeField] private AudioClip      negativeEndgameSound    = null;
 
-        void Awake()
+        private void Awake()
         {
-            foreach (var sound in sounds)
-            {
-                sound.Value.audioSource         = gameObject.GetComponent<AudioSource>();
-                sound.Value.audioSource.clip    = sound.Value.audioClip;
-                sound.Value.audioSource.volume  = sound.Value.volume;
-                sound.Value.audioSource.pitch   = sound.Value.pitch;
-            }
+            Assert.IsNotNull(gameObject.GetComponent<AudioSource>());
         }
 
-        void PlaySound(string key)
+        private void PlayClip(AudioClip clip)
         {
-            Environment.Sound sound;
+            var audioSource     = gameObject.GetComponent<AudioSource>();
+            audioSource.clip    = clip;
+            audioSource.Play();
+        }
 
-            if (sounds.TryGetValue(key, out sound))
-            {
-                sound.audioSource.Play();
-            }
+        public void PlayRandomRewardingSound()
+        {
+            PlayClip(rewardingSounds[Random.Range(0, rewardingSounds.Length - 1)]);
+        }
+
+        public void PlayRandomEncouragementSound()
+        {
+            PlayClip(encouragementSounds[Random.Range(0, encouragementSounds.Length - 1)]);
+        }
+
+        public void PlayPositiveEndgameSound()
+        {
+            PlayClip(positiveEndgameSound);
+        }
+
+        public void PlayNegativeEndgameSound()
+        {
+            PlayClip(negativeEndgameSound);
+        }
+
+        public void PlaySoundAsAmbient(AudioClip clip)
+        {
+            PlayClip(clip);
         }
     }
 }
