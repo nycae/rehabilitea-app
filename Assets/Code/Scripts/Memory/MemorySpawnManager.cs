@@ -26,7 +26,22 @@ namespace Memory
             Dictionary<int, int> classCount = new Dictionary<int, int>();
 
             // We ask the asset manager for the card sprites. There are card pairs, so we only ask for half of the sprites.
-            Sprite[] cardType               = assetManager.GetRandomShapes(cardCount / 2);
+            Sprite[] cardType               = null;
+            
+            switch (Profile.GetProfile().GetDifficulty()) 
+            {
+                case Difficulty.Easy:
+                    cardType = assetManager.GetRandomShapes(cardCount / 2);
+                    break;
+                
+                case Difficulty.Medium:
+                    cardType = assetManager.GetRandomShapesAndCharacters(cardCount / 2);
+                    break;
+
+                case Difficulty.Hard:
+                    cardType = assetManager.GetRandomSprites (cardCount / 2);
+                    break;
+            }
 
             // Top right corner is prepared to be so for max number of cards, therefore it should be displace otherwise
             topRightCorner.x                += (cardsPerRow - numberOfRows) / 2 * widthOffset;

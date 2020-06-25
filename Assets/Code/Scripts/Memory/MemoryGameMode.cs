@@ -11,6 +11,7 @@ namespace Memory
         private class DifficultyAssign
         {
             public Difficulty               diff                = Difficulty.Default;
+            [Range(1, 200)] public int      maxFailures         = 0;
             [Range(0, 128)] public int      cardSpawns          = 0;
         }
 
@@ -35,7 +36,8 @@ namespace Memory
             {
                 if (item.diff == difficulty)
                 {
-                    targetSpawns = item.cardSpawns;
+                    targetSpawns    = item.cardSpawns;
+                    maxFailedRounds = item.maxFailures;
                     break;
                 }
             }
@@ -56,6 +58,8 @@ namespace Memory
         {
             if (card == selectedCard) return;
 
+            audioManager.PlayEnvironmentSound("CardFlip");
+
             if (selectedCard == null)
             {
                 selectedCard = card;
@@ -72,6 +76,7 @@ namespace Memory
             if (secondCard.GetSpriteRenderer().sprite == selectedCard.GetSpriteRenderer().sprite)
             {
                 OnPair.Invoke(true);
+                audioManager.PlayRandomRewardingSound();
                 DeselectCards();
 
                 if (currentPairs == targetPairs)
@@ -105,6 +110,10 @@ namespace Memory
             if (wasSuccessful)
             {
                 currentPairs++;
+            }
+            else
+            {
+                failedRounds++;
             }
         }
 

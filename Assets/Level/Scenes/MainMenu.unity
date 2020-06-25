@@ -1058,7 +1058,7 @@ GameObject:
   - component: {fileID: 873028441}
   - component: {fileID: 873028440}
   m_Layer: 5
-  m_Name: ButtonHard
+  m_Name: ButtonHideAndSeek
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

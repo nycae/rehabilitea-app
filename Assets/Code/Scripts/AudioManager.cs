@@ -6,21 +6,45 @@ namespace RehabiliTEA
 {
     public class AudioManager : MonoBehaviour
     {
-        [SerializeField] private AudioClip[]    encouragementSounds    = null;
-        [SerializeField] private AudioClip[]    rewardingSounds        = null;
+        [System.Serializable]
+        public struct SoundPair
+        {
+            public string       key;
+            public AudioClip    value;
+        }
+
+        [SerializeField] private SoundPair[]    otherSounds             = null;
+        [SerializeField] private AudioClip[]    encouragementSounds     = null;
+        [SerializeField] private AudioClip[]    rewardingSounds         = null;
         [SerializeField] private AudioClip      positiveEndgameSound    = null;
         [SerializeField] private AudioClip      negativeEndgameSound    = null;
+        [SerializeField] private AudioSource    ambientAudioSource      = null;
+        [SerializeField] private AudioSource    narratorAudioSource     = null;
+        private Dictionary<string, AudioClip>   environmentSounds       = new Dictionary<string, AudioClip>();
 
         private void Awake()
         {
-            Assert.IsNotNull(gameObject.GetComponent<AudioSource>());
+            foreach (var pair in otherSounds)
+            {
+                environmentSounds.Add(pair.key, pair.value);
+            }
+
+            otherSounds = null;
+
+            Assert.IsNotNull(ambientAudioSource);
+            Assert.IsNotNull(narratorAudioSource);
         }
 
         private void PlayClip(AudioClip clip)
         {
-            var audioSource     = gameObject.GetComponent<AudioSource>();
-            audioSource.clip    = clip;
-            audioSource.Play();
+            narratorAudioSource.clip = clip;
+            narratorAudioSource.Play();
+        }
+
+        private void PlayEnvironment(AudioClip clip)
+        {
+            ambientAudioSource.clip = clip;
+            ambientAudioSource.Play();
         }
 
         public void PlayRandomRewardingSound()
@@ -46,6 +70,11 @@ namespace RehabiliTEA
         public void PlaySoundAsAmbient(AudioClip clip)
         {
             PlayClip(clip);
+        }
+
+        public void PlayEnvironmentSound(string key)
+        {
+            PlayEnvironment(environmentSounds[key]);
         }
     }
 }

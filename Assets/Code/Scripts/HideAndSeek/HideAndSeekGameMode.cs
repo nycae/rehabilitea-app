@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
+using RehabiliTEA;
 
-namespace RehabiliTEA.HideAndSeek
+namespace HideAndSeek
 {
     public class HideAndSeekGameMode : GameMode
     {
@@ -29,6 +29,7 @@ namespace RehabiliTEA.HideAndSeek
         private HideAndSeekSpawnManager spawnManager    = null;
 
         private Sprite[]                levelSprites    = null;
+        private Sprite[]                selectables     = null;
         private Sprite                  targetSprite    = null;
         private float                   secondsToWait   = 0f;
         private int                     rounds          = 0;
@@ -40,10 +41,6 @@ namespace RehabiliTEA.HideAndSeek
 
         private void Start()
         {
-            Player.SecondsWhenBlocked   = secondsToWait;
-            player.OnSelect            += Evaluate;
-            OnNewRound                 += PrepareRound;
-
             foreach (var assignament in difficulties)
             {
                 if (assignament.difficulty == this.difficulty)
@@ -58,7 +55,10 @@ namespace RehabiliTEA.HideAndSeek
                     break;
                 }
             }
-            difficulties = null; // Free memory, may cause a memory leak, do some research later.
+            difficulties                = null; // Free memory, may cause a memory leak, do some research later.
+
+            player.OnSelect            += Evaluate;
+            OnNewRound                 += PrepareRound;
 
             StartRound();
         }
@@ -66,7 +66,10 @@ namespace RehabiliTEA.HideAndSeek
         private void StartRound()
         {
             spawnManager.DestroyAll();
+
+            Player.SecondsWhenBlocked = secondsToWait;
             player.Block();
+
             GenerateSequence();
             Invoke("HideTarget", secondsToWait);
         }
@@ -86,8 +89,6 @@ namespace RehabiliTEA.HideAndSeek
                 else // Otherwise end the game.
                 {
                     spawnManager.DestroyAll();
-                    // Player.OnSelect -= Evaluate;
-                    // OnNewRound      -= PrepareRound;
                     FinishGame();
                 }
             }
@@ -100,7 +101,23 @@ namespace RehabiliTEA.HideAndSeek
 
         private void GenerateSequence()
         {
-            levelSprites = assetManager.GetRandomShapes(figuresToSpawn);
+            switch (difficulty)
+            {
+                case Difficulty.Easy: 
+                    selectables     = assetManager.GetRandomShapes(3);
+                    levelSprites    = assetManager.GetRandomShapes(figuresToSpawn);
+                    break;
+
+                case Difficulty.Medium:
+                    selectables     = assetManager.GetRandomShapesAndCharacters(3);
+                    levelSprites    = assetManager.GetRandomShapesAndCharacters(figuresToSpawn);
+                    break;
+
+                case Difficulty.Hard:
+                    selectables     = assetManager.GetRandomSprites(3);
+                    levelSprites    = assetManager.GetRandomSprites(figuresToSpawn);
+                    break;
+            }
 
             foreach (var sprite in levelSprites)
             {
@@ -112,6 +129,7 @@ namespace RehabiliTEA.HideAndSeek
 
         private void Evaluate(GameObject sprite)
         {
+            audioManager.PlayEnvironmentSound("Selection");
             OnNewRound.Invoke(sprite.GetComponent<SpriteRenderer>().sprite == targetSprite);
         }
 
@@ -133,6 +151,7 @@ namespace RehabiliTEA.HideAndSeek
         {
             Vector3 startingPoint   = new Vector3(7.85f, 2.25f, 0.0f);
             bool    isTargetVisible = false;
+            int     j               = 0;
 
             for (int i = 0; i < 4; i++)
             {
@@ -147,7 +166,8 @@ namespace RehabiliTEA.HideAndSeek
                 {
                     if (isTargetVisible || Random.Range(0f, 1f) <= 0.5f)
                     {
-                        spawnManager.Spawn(assetManager.GetRandomShapes(50)[Random.Range(0, 49)], spawnPoint);
+                        spawnManager.Spawn(selectables[j], spawnPoint);
+                        j++;
                     }
                     else
                     {
@@ -156,6 +176,11 @@ namespace RehabiliTEA.HideAndSeek
                     }
                 }
             }
+        }
+
+        public float GetSecondsToWait()
+        {
+            return secondsToWait;
         }
     }
 }

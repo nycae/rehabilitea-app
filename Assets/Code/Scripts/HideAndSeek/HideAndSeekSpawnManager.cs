@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using RehabiliTEA;
 using UnityEngine;
 
-namespace RehabiliTEA.HideAndSeek
+namespace HideAndSeek
 {
     public class HideAndSeekSpawnManager : MonoBehaviour
     {
