@@ -28,6 +28,9 @@ namespace HideAndSeek
         [SerializeField]
         private HideAndSeekSpawnManager spawnManager    = null;
 
+        [SerializeField]
+        private UnityEngine.UI.Slider   progressBar     = null;
+
         private Sprite[]                levelSprites    = null;
         private Sprite[]                selectables     = null;
         private Sprite                  targetSprite    = null;
@@ -149,14 +152,14 @@ namespace HideAndSeek
 
         private void SpawnOptions()
         {
-            Vector3 startingPoint   = new Vector3(7.85f, 2.25f, 0.0f);
-            bool    isTargetVisible = false;
             int     j               = 0;
+            bool    isTargetVisible = false;
+            Vector3 startingPoint   = new Vector3(-4.3f, -3.7f, 0.0f);
 
             for (int i = 0; i < 4; i++)
             {
                 Vector3 spawnPoint  = startingPoint;
-                spawnPoint.y        -= 2f * i;
+                spawnPoint.x        -= -2.7666666666666666666666666666667f * i;
 
                 if (i >= 3 && !isTargetVisible)
                 {
