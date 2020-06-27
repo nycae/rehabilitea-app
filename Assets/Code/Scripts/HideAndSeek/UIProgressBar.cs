@@ -12,7 +12,7 @@ namespace HideAndSeek
         [SerializeField] private RehabiliTEA.Player     player      = null;
                          private float                  timestamp   = 0f;   
 
-        void ResetTimestamp(GameObject gameObject)
+        void ResetTimestamp(GameObject gameObject = null)
         {
             timestamp = Time.time;
         }
@@ -26,6 +26,8 @@ namespace HideAndSeek
         {
             player.OnSelect     += ResetTimestamp;
             gameMode.OnGameEnd  += HideBar;
+
+            ResetTimestamp();
         }
 
         void Update()
