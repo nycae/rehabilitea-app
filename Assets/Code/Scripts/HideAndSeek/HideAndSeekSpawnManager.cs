@@ -31,16 +31,19 @@ namespace HideAndSeek
         public GameObject Spawn(Sprite sprite)
         {
             Vector3     objectPosition  = GeneratePosition();
-            GameObject  objectBuffer    = Instantiate(baseObject, objectPosition, Quaternion.identity);
+            GameObject  objectBuffer    = new GameObject("Sprite");
 
             spawnPositions.Add(objectPosition);
 
-            objectBuffer.GetComponent<ClickableSprite>().GetSpriteRenderer().sprite = sprite;
+            objectBuffer.AddComponent<SpriteRenderer>();
+            objectBuffer.GetComponent<SpriteRenderer>().sprite  = sprite;
+            objectBuffer.transform.position                     = objectPosition;
+            objectBuffer.transform.localScale                   = new Vector3(0.4f, 0.4f, 0.4f);
 
             return objectBuffer;
         }
 
-        public GameObject Spawn(Sprite sprite, Vector3 position)
+        public GameObject SpawnClickable(Sprite sprite, Vector3 position)
         {
             GameObject objectBuffer = Instantiate(baseObject, position, Quaternion.identity);
 
@@ -51,7 +54,7 @@ namespace HideAndSeek
 
         public void DestroyAll()
         {
-            foreach (var sprite in FindObjectsOfType<ClickableSprite>())
+            foreach (var sprite in FindObjectsOfType<SpriteRenderer>())
             {
                 Destroy(sprite.gameObject);
             }

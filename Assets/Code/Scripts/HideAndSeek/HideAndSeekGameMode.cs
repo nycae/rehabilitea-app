@@ -28,9 +28,6 @@ namespace HideAndSeek
         [SerializeField]
         private HideAndSeekSpawnManager spawnManager    = null;
 
-        [SerializeField]
-        private UnityEngine.UI.Slider   progressBar     = null;
-
         private Sprite[]                levelSprites    = null;
         private Sprite[]                selectables     = null;
         private Sprite                  targetSprite    = null;
@@ -70,8 +67,8 @@ namespace HideAndSeek
         {
             spawnManager.DestroyAll();
 
-            Player.SecondsWhenBlocked = secondsToWait;
-            player.Block();
+            //Player.SecondsWhenBlocked = secondsToWait;
+            player.Block(secondsToWait);
 
             GenerateSequence();
             Invoke("HideTarget", secondsToWait);
@@ -85,8 +82,8 @@ namespace HideAndSeek
 
                 if (rounds > 0) // If there is more rounds increase difficulty and start again.
                 {
-                    secondsToWait -= timeDecrease;
-                    figuresToSpawn += figuresAugment;
+                    secondsToWait   -= timeDecrease;
+                    figuresToSpawn  += figuresAugment;
                     StartRound();
                 }
                 else // Otherwise end the game.
@@ -163,18 +160,18 @@ namespace HideAndSeek
 
                 if (i >= 3 && !isTargetVisible)
                 {
-                    spawnManager.Spawn(targetSprite, spawnPoint);
+                    spawnManager.SpawnClickable(targetSprite, spawnPoint);
                 }
                 else
                 {
                     if (isTargetVisible || Random.Range(0f, 1f) <= 0.5f)
                     {
-                        spawnManager.Spawn(selectables[j], spawnPoint);
+                        spawnManager.SpawnClickable(selectables[j], spawnPoint);
                         j++;
                     }
                     else
                     {
-                        spawnManager.Spawn(targetSprite, spawnPoint);
+                        spawnManager.SpawnClickable(targetSprite, spawnPoint);
                         isTargetVisible = true;
                     }
                 }

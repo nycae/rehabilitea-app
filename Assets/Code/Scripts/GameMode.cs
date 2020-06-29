@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 
@@ -8,6 +9,8 @@ namespace RehabiliTEA
 {
     public class GameMode : MonoBehaviour
     {
+        [SerializeField]
+        protected GameObject    messageScreen;
         protected Player        player;
         protected AudioManager  audioManager;
         protected int           failedRounds;
@@ -25,6 +28,9 @@ namespace RehabiliTEA
 
             Assert.IsNotNull(player);
             Assert.IsNotNull(audioManager);
+
+            if (messageScreen)
+                messageScreen.SetActive(false);
         }
 
         protected void FinishGame()
@@ -52,12 +58,20 @@ namespace RehabiliTEA
 
         private void PlayGoodEndAnimation()
         {
-            // TODO
+            if (messageScreen)
+            {
+                messageScreen.GetComponentInChildren<Text>().text = "¡Muy bien, sigue así!";
+                messageScreen.SetActive(true);
+            }
         }
 
         private void PlayBadEndAnimation()
         {
-            // TODO
+            if (messageScreen)
+            {
+                messageScreen.GetComponentInChildren<Text>().text = "¡Puedes mejorar, vuelve a intentarlo!";
+                messageScreen.SetActive(true);
+            }
         }
 
         private void LoadMainMenu()

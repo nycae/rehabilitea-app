@@ -3,8 +3,15 @@ using UnityEngine.SceneManagement;
 
 public class LevelLoader : MonoBehaviour
 {
-    public void LoadLevel(string levelName)
+    private string levelToLoad;
+
+    public void LoadLevel()
     {
-        SceneManager.LoadScene(levelName);
+        SceneManager.LoadScene(levelToLoad);
+    }
+
+    public void SetNextLevel(string nextLevel)
+    {
+        levelToLoad = nextLevel;
     }
 }

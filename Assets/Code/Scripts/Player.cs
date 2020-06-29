@@ -6,27 +6,34 @@ namespace RehabiliTEA
 {
     public class Player : MonoBehaviour
     {
-        private float           blockTimestamp      = 0f;
+        [SerializeField]
+        private float           cadency             = 10f;
         private bool            isBlocked           = false;
-        static public float     SecondsWhenBlocked  = 1;
 
         public delegate void    Select(GameObject sprite);
         public event Select     OnSelect;
 
         public void Block()
         {
-            isBlocked       = true;
-            blockTimestamp  = Time.time;
+            isBlocked = true;
+        }
+        
+        public void Block(float timeBlocked)
+        {
+            isBlocked = true;
+            Invoke("Free", timeBlocked);
+        }
+
+        public void Free()
+        {
+            isBlocked = false;
         }
 
         private void Update()
         {
-            if (isBlocked)
+            if (isBlocked)  
             {
-                if (Time.time >= blockTimestamp + SecondsWhenBlocked)
-                {
-                    isBlocked = false;
-                }
+                return;
             }
             else
             {
@@ -46,6 +53,8 @@ namespace RehabiliTEA
                 if (sprite)
                 {
                     OnSelect.Invoke(hit.collider.gameObject);
+                    Block();
+                    Invoke("Free", 1/cadency);
                 }
             }
         }

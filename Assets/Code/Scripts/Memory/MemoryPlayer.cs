@@ -9,7 +9,7 @@ namespace Memory
     {
         void Start()
         {
-            SecondsWhenBlocked      = MemoryCard.TimeToTurn * 1.5f;
+            //SecondsWhenBlocked      = MemoryCard.TimeToTurn * 1.5f;
             MemoryGameMode.OnPair  += OnPair;
         }
 
@@ -17,7 +17,7 @@ namespace Memory
         {
             if (!wasSucessfull)
             {
-                Block();
+                Block(MemoryCard.TimeToTurn * 1.5f);
             }
         }
 
