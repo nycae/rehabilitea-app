@@ -367,9 +367,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9fe264b79d0b8f14c851a984f31d72e4, type: 3}
---- !u!1 &386864003 stripped
+--- !u!1 &460872038 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 2650610964541755221, guid: 9fe264b79d0b8f14c851a984f31d72e4,
+  m_CorrespondingSourceObject: {fileID: 2650610963349849987, guid: 9fe264b79d0b8f14c851a984f31d72e4,
     type: 3}
   m_PrefabInstance: {fileID: 386864002}
   m_PrefabAsset: {fileID: 0}
@@ -746,7 +746,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83f9cc7ca01e38f4f8db1c15fd11924e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  messageScreen: {fileID: 386864003}
+  messageScreen: {fileID: 460872038}
   difficulties:
   - difficulty: 1
     bubbleCount: 5
