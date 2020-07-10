@@ -10,7 +10,7 @@ namespace Memory
         void Start()
         {
             //SecondsWhenBlocked      = MemoryCard.TimeToTurn * 1.5f;
-            MemoryGameMode.OnPair  += OnPair;
+            FindObjectOfType<MemoryGameMode>().OnPair  += OnPair;
         }
 
         private void OnPair(bool wasSucessfull)

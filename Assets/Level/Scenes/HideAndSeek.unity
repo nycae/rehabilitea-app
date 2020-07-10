@@ -707,7 +707,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cb94e004c985554e82da657c3ae30c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  messageScreen: {fileID: 726102660}
+  messageScreen: {fileID: 1683095630}
   difficulties:
   - difficulty: 1
     rounds: 3
@@ -732,12 +732,6 @@ MonoBehaviour:
     timeDecrease: 1
   assetManager: {fileID: 219822212}
   spawnManager: {fileID: 278952239}
---- !u!1 &726102660 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2650610964541755221, guid: 9fe264b79d0b8f14c851a984f31d72e4,
-    type: 3}
-  m_PrefabInstance: {fileID: 1509130737}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &821589222
 GameObject:
   m_ObjectHideFlags: 0
@@ -1517,6 +1511,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1683095630 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2650610963349849987, guid: 9fe264b79d0b8f14c851a984f31d72e4,
+    type: 3}
+  m_PrefabInstance: {fileID: 1509130737}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1697630084
 GameObject:
   m_ObjectHideFlags: 0

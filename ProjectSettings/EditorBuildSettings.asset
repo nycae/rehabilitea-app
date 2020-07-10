@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Level/Scenes/Bubbles.unity
     guid: 2072d60809e6e314d86c01cdc8aa78b5
+  - enabled: 1
+    path: Assets/Level/Scenes/Piano.unity
+    guid: 7078727e56583324ab83834bb3532327
   m_configObjects: {}

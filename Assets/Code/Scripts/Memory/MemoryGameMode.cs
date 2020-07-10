@@ -27,7 +27,7 @@ namespace Memory
         private int                         targetSpawns        = 0;
         private int                         targetPairs         = 0;
         public delegate void                EvaluatePair(bool wasSuccessful);
-        static public event EvaluatePair    OnPair;
+        public event EvaluatePair           OnPair;
 
 
         private void Start()
@@ -91,7 +91,7 @@ namespace Memory
             }
         }
 
-        private void FlipCards()
+        void FlipCards()
         {
             selectedCard.TurnArround();
             secondCard.TurnArround();
@@ -115,6 +115,15 @@ namespace Memory
             {
                 failedRounds++;
             }
+        }
+
+        void OnDestroy()
+        {
+            selectedCard    = null;
+            secondCard      = null;
+            currentPairs    = 0;
+            targetSpawns    = 0;
+            targetPairs     = 0;
         }
 
         public int GetTargetScore()

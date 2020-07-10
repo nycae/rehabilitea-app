@@ -28,6 +28,8 @@ namespace HideAndSeek
 
         IEnumerator FadeOutMessage()
         {
+            yield return new WaitForSeconds(1f);
+            
             for (float f = 1f; f > 0; f -= 0.005f)
             {
                 flashScreen.alpha = f;
@@ -68,7 +70,7 @@ namespace HideAndSeek
             }
             else
             {
-                if( !optionsMenu.activeSelf )
+                if (!optionsMenu.activeSelf)
                 {
                     optionsMenu.SetActive(true);
                     slider.gameObject.SetActive(false);
