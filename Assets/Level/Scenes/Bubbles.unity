@@ -255,6 +255,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2650610963420649437, guid: 9fe264b79d0b8f14c851a984f31d72e4,
+        type: 3}
+      propertyPath: m_Animation
+      value: 
+      objectReference: {fileID: 7400000, guid: 58e20a4ad17f9f74e9e1d5f3ac3794dc, type: 2}
     - target: {fileID: 2650610964541755217, guid: 9fe264b79d0b8f14c851a984f31d72e4,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -748,15 +753,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   messageScreen: {fileID: 460872038}
   difficulties:
-  - difficulty: 1
+  - difficulty: 0
     bubbleCount: 5
     distractionCount: 0
     maxFailures: 1
-  - difficulty: 2
+  - difficulty: 1
     bubbleCount: 7
     distractionCount: 5
     maxFailures: 1
-  - difficulty: 3
+  - difficulty: 2
     bubbleCount: 10
     distractionCount: 10
     maxFailures: 1

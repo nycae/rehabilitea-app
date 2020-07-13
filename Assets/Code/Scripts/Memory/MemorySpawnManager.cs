@@ -28,7 +28,7 @@ namespace Memory
             // We ask the asset manager for the card sprites. There are card pairs, so we only ask for half of the sprites.
             Sprite[] cardType               = null;
             
-            switch (Profile.GetProfile().GetDifficulty()) 
+            switch (FindObjectOfType<GameMode>().GetDifficulty()) 
             {
                 case Difficulty.Easy:
                     cardType = assetManager.GetRandomShapes(cardCount / 2);

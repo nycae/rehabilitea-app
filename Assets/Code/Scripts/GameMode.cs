@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
@@ -29,8 +27,8 @@ namespace RehabiliTEA
             Assert.IsNotNull(player);
             Assert.IsNotNull(audioManager);
 
-            if (messageScreen)
-                messageScreen.SetActive(false);
+            if (messageScreen) messageScreen.SetActive(false);
+            Profile.GetProfile().PostEvent("GameStart");
         }
 
         protected void FinishGame()
@@ -46,11 +44,14 @@ namespace RehabiliTEA
 
                 PlayGoodEndAnimation();
                 audioManager.PlayPositiveEndgameSound();
+                Profile.GetProfile().UpdateDifficulty();
+                Profile.GetProfile().PostEvent("GamePassed");
             }
             else
             {
                 PlayBadEndAnimation();
                 audioManager.PlayNegativeEndgameSound();
+                Profile.GetProfile().PostEvent("GameFailed");
             }
 
             Invoke("LoadMainMenu", 5f);
@@ -77,6 +78,11 @@ namespace RehabiliTEA
         private void LoadMainMenu()
         {
             SceneManager.LoadScene("MainMenu"); 
+        }
+
+        public Difficulty GetDifficulty()
+        {
+            return difficulty;
         }
     }
 }

@@ -9,52 +9,62 @@ namespace RehabiliTEA
         [SerializeField] private Canvas mainCanvas      = null;
         [SerializeField] private Canvas gameCanvas      = null;
         [SerializeField] private Canvas configCanvas    = null;
+        [SerializeField] private Canvas profileCanvas   = null;
 
         private void Start()
         {
             DisplayMainCanvas();
         }
 
-        // public void DisplayMainCanvas()
-        // {
-        //     mainCanvas.enabled      = true;
-        //     gameCanvas.enabled      = false;
-        //     configCanvas.enabled    = false;
-        // }
-
-        // public void DisplayGameCanvas()
-        // {
-        //     mainCanvas.enabled      = false;
-        //     gameCanvas.enabled      = true;
-        //     configCanvas.enabled    = false;
-        // }
-
-        // public void DisplayConfigCanvas()
-        // {
-        //     mainCanvas.enabled      = false;
-        //     gameCanvas.enabled      = false;
-        //     configCanvas.enabled    = true;
-        // }
+        private void HideAll()
+        {
+            mainCanvas.gameObject.SetActive(false);
+            gameCanvas.gameObject.SetActive(false);
+            configCanvas.gameObject.SetActive(false);
+            profileCanvas.gameObject.SetActive(false);
+        }
 
         public void DisplayMainCanvas()
         {
+            HideAll();
             mainCanvas.gameObject.SetActive(true);
-            gameCanvas.gameObject.SetActive(false);
-            configCanvas.gameObject.SetActive(false);
         }
 
         public void DisplayGameCanvas()
         {
-            mainCanvas.gameObject.SetActive(false);
+            HideAll();
             gameCanvas.gameObject.SetActive(true);
-            configCanvas.gameObject.SetActive(false);
         }
 
         public void DisplayConfigCanvas()
         {
-            mainCanvas.gameObject.SetActive(false);
-            gameCanvas.gameObject.SetActive(false);
-            configCanvas.gameObject.SetActive(true);
+            if (!Profile.GetProfile().HasInternetConnection())
+            {
+                HideAll();
+                configCanvas.gameObject.SetActive(true);
+            }
+        }
+
+        public void DisplayProfileCanvas()
+        {
+            HideAll();
+            profileCanvas.gameObject.SetActive(true);
+        }
+
+        public void SaveProfileData(UnityEngine.UI.InputField inputField)
+        {
+            int newId = Profile.GetProfile().GetId();
+
+            try 
+            {   
+                newId = int.Parse(inputField.text);
+            }
+            catch (System.FormatException)
+            {
+                // pass
+            }
+
+            Profile.GetProfile().SetId(newId);
         }
     }
 }

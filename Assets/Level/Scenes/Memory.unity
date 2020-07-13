@@ -539,13 +539,13 @@ MonoBehaviour:
   messageScreen: {fileID: 291171396}
   spawnManager: {fileID: 1921172150}
   difficultySpawnList:
-  - diff: 1
+  - diff: 0
     maxFailures: 50
     cardSpawns: 16
-  - diff: 2
+  - diff: 1
     maxFailures: 40
     cardSpawns: 20
-  - diff: 3
+  - diff: 2
     maxFailures: 40
     cardSpawns: 24
 --- !u!4 &1810589488

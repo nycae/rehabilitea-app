@@ -709,21 +709,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   messageScreen: {fileID: 1683095630}
   difficulties:
-  - difficulty: 1
+  - difficulty: 0
     rounds: 3
     figuresToSpawn: 3
     figureAugment: 1
     maxRoundsToFail: 20
     secondsToWait: 9
     timeDecrease: 1
-  - difficulty: 2
+  - difficulty: 1
     rounds: 4
     figuresToSpawn: 5
     figureAugment: 1
     maxRoundsToFail: 12
     secondsToWait: 8
     timeDecrease: 1
-  - difficulty: 3
+  - difficulty: 2
     rounds: 5
     figuresToSpawn: 6
     figureAugment: 1

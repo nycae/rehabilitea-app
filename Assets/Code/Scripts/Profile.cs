@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.IO;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -6,55 +7,57 @@ using UnityEngine.Networking;
 namespace RehabiliTEA
 {
     public class Profile
-    {
-        [System.Serializable]
-        public class ProfileData
-        {
-            public int      id;
-            public int      userId;
-            public string   title;
-            public bool     completed;
+    {   
+        private class Response { public bool isError = false; public string result = ""; }
+        private class DifficultyResponse { public string difficulty = ""; }
 
-            public override string ToString()
-            {
-                string result   = System.String.Format("id = {0}\n", id);
-                result          += System.String.Format("user id = {0}\n", userId);
-                result          += System.String.Format("title = {0}\n", title);
-                result          += System.String.Format("completed = {0}\n", completed);
-
-                return result;
-            }
-        }
-
-        private class Response
-        {
-            public string           result          = "";
-        }
-
-        private string              urlEndpoint     = "https://jsonplaceholder.typicode.com/todos/1";
-        private ProfileData         data            = null;
-        private Difficulty          taskDifficulty  = Difficulty.Hard;
-
-        private static Profile      UserProfile     = null;
+        private string          currentTask     = "";
+        private bool            hasInternet     = true;
+        private int             id              = 1;
+        private Difficulty      taskDifficulty  = Difficulty.Hard;
+        private const string    baseURL         = "http://localhost";
+        private static Profile  UserProfile     = null;
 
         private Profile()
         {
-            CreateFromOnlineProfile(1);
+            string filePath = Application.persistentDataPath + "/user.txt";
+            string internet = GetRequestAt(baseURL + "/ping");
+
+            if (File.Exists(filePath))
+            {
+                id = int.Parse(File.ReadAllLines(filePath)[0]);
+            }
+
+            hasInternet = !internet.Equals("error");
         }
 
-        private void CreateFromOnlineProfile(int id)
+        ~Profile()
+        {
+            string filePath = Application.persistentDataPath + "/user.txt";
+
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
+            var file = File.CreateText(filePath);
+            file.Write(id.ToString());
+            file.Close();
+        }
+
+        private string GetRequestAt(string endpoint)
         {
             Response    result  = new Response();
-            IEnumerator iter    = WaitForResponse(result);
+            IEnumerator iter    = WaitForResponse(result, endpoint);
 
             while (iter.MoveNext()) ;
 
-            data = JsonUtility.FromJson<ProfileData>(result.result);
+            return result.isError ? "error" : result.result;
         }
 
-        private IEnumerator WaitForResponse(Response result)
+        private IEnumerator WaitForResponse(Response result, string url)
         {
-            UnityWebRequest webRequest = UnityWebRequest.Get(urlEndpoint);
+            UnityWebRequest webRequest = UnityWebRequest.Get(url);
 
             yield return    webRequest.SendWebRequest();
 
@@ -62,12 +65,25 @@ namespace RehabiliTEA
 
             if (webRequest.isNetworkError || webRequest.isHttpError)
             {
-                result.result = webRequest.error;
+                result.isError  = true;
+                result.result   = webRequest.error;
             }
             else
             {
-                result.result = webRequest.downloadHandler.text;
+                result.isError  = false;
+                result.result   = webRequest.downloadHandler.text;
             }
+        }
+
+        private void SendPost(string url, string json)
+        {
+            UnityWebRequest postRequest = UnityWebRequest.Post(url, "POST");
+
+            postRequest.uploadHandler   = (UploadHandler) new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(json));
+            postRequest.downloadHandler = (DownloadHandler) new DownloadHandlerBuffer();
+
+            postRequest.SetRequestHeader("Content-Type", "application/json");
+            postRequest.SendWebRequest();
         }
 
         public static Profile GetProfile()
@@ -80,11 +96,6 @@ namespace RehabiliTEA
             return UserProfile;
         }
 
-        public ProfileData GetData()
-        {
-            return data;
-        }
-
         public Difficulty GetDifficulty()
         {
             return taskDifficulty;
@@ -93,6 +104,68 @@ namespace RehabiliTEA
         public void SetDifficulty(Difficulty newDifficulty)
         {
             taskDifficulty = newDifficulty;
+        }
+
+        public void LoadDifficulty(string levelName)
+        {
+            currentTask = levelName;
+            if (hasInternet)
+            {
+                string endpoint     = System.String.Format("{0}/difficulty/{1}/{2}", baseURL, id, levelName);
+                string jsonContent  = GetRequestAt(endpoint);
+
+                if (!jsonContent.Equals("error"))
+                {
+                    DifficultyResponse difficultyStr = JsonUtility.FromJson<DifficultyResponse>(jsonContent);
+
+                    switch (difficultyStr.difficulty)
+                    {
+                        case "Easy":    taskDifficulty = Difficulty.Easy;   break;
+                        case "Hard":    taskDifficulty = Difficulty.Hard;   break;
+                        case "Medium":  taskDifficulty = Difficulty.Medium; break;
+                        default: Debug.Log(difficultyStr.difficulty);       break;
+                    }
+                }
+            }
+        }
+
+        public void UpdateDifficulty()
+        {
+            if (taskDifficulty < Difficulty.Hard && hasInternet)
+            {
+                taskDifficulty++;
+
+                string url  = System.String.Format("{0}/difficulty/{1}/{2}", baseURL, id, currentTask);
+                string json = "{\"difficulty\": " + (int) taskDifficulty + "}";
+
+                SendPost(url, json);
+            }
+        }
+
+        public void PostEvent(string eventName)
+        {
+            if (hasInternet)
+            {
+                string url  = System.String.Format("{0}/event/{1}/{2}", baseURL, id, currentTask);
+                string json = "{\"event\": \"" + eventName + "\"}";
+
+                SendPost(url, json);
+            }
+        }
+
+        public int GetId()
+        {
+            return id;
+        }
+
+        public void SetId(int newId)
+        {
+            id = newId;
+        }
+
+        public bool HasInternetConnection()
+        {
+            return hasInternet;
         }
     }
 }

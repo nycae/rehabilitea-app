@@ -1,17 +1,31 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LevelLoader : MonoBehaviour
+namespace RehabiliTEA
 {
-    private string levelToLoad;
-
-    public void LoadLevel()
+    public class LevelLoader : MonoBehaviour
     {
-        SceneManager.LoadScene(levelToLoad);
-    }
+        private string levelToLoad;
 
-    public void SetNextLevel(string nextLevel)
-    {
-        levelToLoad = nextLevel;
+        public void LoadLevel()
+        {
+            if (!Profile.GetProfile().HasInternetConnection())
+            {
+                SceneManager.LoadScene(levelToLoad);
+            }
+        }
+
+        public void SetNextLevel(string nextLevel)
+        {
+            if (Profile.GetProfile().HasInternetConnection())
+            {
+                Profile.GetProfile().LoadDifficulty(nextLevel);
+                SceneManager.LoadScene(nextLevel);
+            }
+            else
+            {
+                levelToLoad = nextLevel;
+            }
+        }
     }
 }

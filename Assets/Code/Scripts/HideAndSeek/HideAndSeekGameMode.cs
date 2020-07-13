@@ -10,7 +10,7 @@ namespace HideAndSeek
         [System.Serializable]
         private class DifficultyAssign
         {
-            public Difficulty           difficulty      = Difficulty.Default;
+            public Difficulty           difficulty      = Difficulty.Hard;
             [Range(1, 10)] public int   rounds          = 0;
             [Range(1, 20)] public int   figuresToSpawn  = 0;
             [Range(0, 10)] public int   figureAugment   = 0;

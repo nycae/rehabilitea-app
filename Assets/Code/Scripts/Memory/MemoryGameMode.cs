@@ -10,7 +10,7 @@ namespace Memory
         [System.Serializable]
         private class DifficultyAssign
         {
-            public Difficulty               diff                = Difficulty.Default;
+            public Difficulty               diff                = Difficulty.Hard;
             [Range(1, 200)] public int      maxFailures         = 0;
             [Range(0, 128)] public int      cardSpawns          = 0;
         }
