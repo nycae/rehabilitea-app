@@ -31,11 +31,11 @@ namespace Memory
             switch (FindObjectOfType<GameMode>().GetDifficulty()) 
             {
                 case Difficulty.Easy:
-                    cardType = assetManager.GetRandomShapes(cardCount / 2);
+                    cardType = assetManager.GetRandomDrawings(cardCount / 2);
                     break;
                 
                 case Difficulty.Medium:
-                    cardType = assetManager.GetRandomShapesAndCharacters(cardCount / 2);
+                    cardType = assetManager.GetRandomShapes(cardCount / 2);
                     break;
 
                 case Difficulty.Hard:

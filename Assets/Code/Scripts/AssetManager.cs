@@ -97,5 +97,19 @@ namespace RehabiliTEA
 
             return System.Linq.Enumerable.ToArray(sprites);   
         }
+
+        public Sprite[] GetRandomDrawings(int numberOfShapes)
+        {
+            if (numberOfShapes < 0 || numberOfShapes > drawings.Length) return null;
+
+            HashSet<Sprite> resultSprite = new HashSet<Sprite>();
+
+            while (resultSprite.Count < numberOfShapes)
+            {
+                resultSprite.Add(drawings[Random.Range(0, drawings.Length)]);
+            }
+
+            return resultSprite.ToArray();
+        }
     }
 }
