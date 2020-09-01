@@ -61,7 +61,8 @@ namespace RehabiliTEA
         {
             if (messageScreen)
             {
-                messageScreen.GetComponentInChildren<Text>().text = "¡Muy bien, sigue así!";
+                messageScreen.GetComponentInChildren<Text>().text = 
+                    System.String.Format("¡Muy bien, sigue así!\nPuntuación: {0} de {1} fallos", failedRounds, maxFailedRounds);
                 messageScreen.SetActive(true);
             }
         }
@@ -70,7 +71,8 @@ namespace RehabiliTEA
         {
             if (messageScreen)
             {
-                messageScreen.GetComponentInChildren<Text>().text = "¡Puedes mejorar, vuelve a intentarlo!";
+                messageScreen.GetComponentInChildren<Text>().text = 
+                    System.String.Format("¡Puedes mejorar, vuelve a intentarlo!\nPuntuación: {0} de {1} fallos", failedRounds, maxFailedRounds);
                 messageScreen.SetActive(true);
             }
         }

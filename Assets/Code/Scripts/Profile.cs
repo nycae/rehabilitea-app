@@ -153,6 +153,17 @@ namespace RehabiliTEA
             }
         }
 
+        public void PostScore(int failures)
+        {
+            if (hasInternet)
+            {
+                string url  = System.String.Format("{0}/score/{1}/{2}", baseURL, id, currentTask);
+                string json = "{\"failures\": \"" + failures + "\"}";
+
+                SendPost(url, json);
+            }
+        }
+
         public int GetId()
         {
             return id;

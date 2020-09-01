@@ -31,8 +31,8 @@ namespace RehabiliTEA.Bubbles
         [SerializeField]
         private float               leftBound       = 0.0f;
 
-        private List<GameObject>    spawnedObjects  = null;
-        private Queue<Sprite>       spawnSequence   = null;
+        private List<GameObject>    spawnedObjects  = new List<GameObject>();
+        private Queue<Sprite>       spawnSequence   = new Queue<Sprite>();
 
         public Sprite[] GenerateSpriteSequences(int numberOfBubbles, int numberOfDisctractions)
         {
@@ -57,6 +57,72 @@ namespace RehabiliTEA.Bubbles
             }
 
             return numberSequence.ToArray();
+        }
+
+        public Sprite[] GenerateSpriteSequence(Difficulty difficulty, int numberOfDisctractions)
+        {
+            int             spawnCount              = 0;
+            int             nextSpriteIndex         = 0;
+            int             nextDistractionIndex    = 0;
+            Sprite[]        targetSequence          = null;
+            Sprite[]        distractions            = assetManager.GetRandomShapes(numberOfDisctractions + 1);
+            HashSet<int>    distractionIndices      = new HashSet<int>();
+
+            switch (difficulty)
+            {
+                case Difficulty.Easy:
+                    targetSequence = assetManager.GetRandomColorNumberSequence();
+                    break;
+
+                case Difficulty.Medium:
+                    targetSequence = assetManager.GetRandomColorAbecedarySequence();
+                    break;
+
+                default:
+                    var numbers     = assetManager.GetRandomColorNumberSequence().Take(11).ToList();
+                    var characters  = assetManager.GetRandomColorAbecedarySequence().Take(11).ToList();
+
+                    targetSequence  = new Sprite[20];
+
+                    for (int i = 0; i < 20; i++)
+                    {   
+                        if (i % 2 == 0) // even
+                        {
+                            targetSequence[i] = numbers[0];
+                            numbers.RemoveAt(0);
+                        }
+                        else            // odd
+                        {
+                            targetSequence[i] = characters[0];
+                            characters.RemoveAt(0);
+                        }
+                    }
+                    
+                    break;
+            }
+
+            spawnCount = targetSequence.Length + numberOfDisctractions;
+
+            while (distractionIndices.Count < numberOfDisctractions)
+            {
+                distractionIndices.Add(Random.Range(0, spawnCount));
+            }
+
+            for (int i = 0; i < spawnCount; i++)
+            {
+                if (distractionIndices.Contains(i))
+                {
+                    spawnSequence.Enqueue(distractions[nextDistractionIndex]);
+                    nextDistractionIndex++;
+                }
+                else
+                {
+                    spawnSequence.Enqueue(targetSequence[nextSpriteIndex]);
+                    nextSpriteIndex++;
+                }
+            }
+
+            return targetSequence;
         }
 
         public GameObject SpawnNextSprite()

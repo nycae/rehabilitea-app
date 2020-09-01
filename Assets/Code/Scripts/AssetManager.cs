@@ -40,6 +40,19 @@ namespace RehabiliTEA
             return selectedNumbers;
         }
 
+        public Sprite[] GetRandomColorAbecedarySequence()
+        {
+            int         colorIndex          = Random.Range(1, 9);
+            Sprite[]    selectedAbecedary   = new Sprite[26];
+
+            for (int i = 0; i < abecedary.Length; i += 9)
+            {
+                selectedAbecedary[i / 9] = abecedary[i + colorIndex];
+            }
+
+            return selectedAbecedary;
+        }
+
         public Sprite[] GetRandomMixedColorNumberSequence()
         {
             int         colorIndex;

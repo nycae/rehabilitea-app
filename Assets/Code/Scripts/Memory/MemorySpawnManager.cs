@@ -39,12 +39,12 @@ namespace Memory
                     break;
 
                 case Difficulty.Hard:
-                    cardType = assetManager.GetRandomSprites (cardCount / 2);
+                    cardType = assetManager.GetRandomSprites(cardCount / 2);
                     break;
             }
 
             // Top right corner is prepared to be so for max number of cards, therefore it should be displace otherwise
-            topRightCorner.x                += (cardsPerRow - numberOfRows) / 2 * widthOffset;
+            topRightCorner.x                += ((cardsPerRow - numberOfRows) / 2.0f) * widthOffset;
 
             // First spawn position is top right corner
             Vector3 spawnPosition           = topRightCorner;

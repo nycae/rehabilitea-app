@@ -11,9 +11,8 @@ namespace RehabiliTEA.Bubbles
         private class DifficultyAssign
         {
             public Difficulty           difficulty          = 0;
-            [Range(0, 10)] public int   bubbleCount         = 0;
-            [Range(0, 10)] public int   distractionCount    = 0;
-            [Range(0, 10)] public int   maxFailures         = 0;
+            [Range(0, 20)] public int   distractionCount    = 0;
+            [Range(0, 20)] public int   maxFailures         = 0;
         }
 
         [SerializeField]
@@ -44,7 +43,6 @@ namespace RehabiliTEA.Bubbles
             {
                 if (difficultyAssign.difficulty == this.difficulty)
                 {
-                    this.bubbleCount        = difficultyAssign.bubbleCount;
                     this.distractionCount   = difficultyAssign.distractionCount;
                     this.maxFailedRounds    = difficultyAssign.maxFailures;
 
@@ -53,7 +51,8 @@ namespace RehabiliTEA.Bubbles
             }
 
             difficulties    = null;
-            sequence        = new Queue<Sprite>(spawnManager.GenerateSpriteSequences(bubbleCount, distractionCount));
+            sequence        = new Queue<Sprite>(spawnManager.GenerateSpriteSequence(this.difficulty, distractionCount));
+            bubbleCount     = sequence.Count;
 
             player.OnSelect += AttendBubble;
             OnScore         += AddScore;
