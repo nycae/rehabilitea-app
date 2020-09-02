@@ -11,6 +11,7 @@ namespace RehabiliTEA
         [SerializeField] private Sprite[] numbers   = new Sprite[0];
         [SerializeField] private Sprite[] shapes    = new Sprite[0];
         [SerializeField] private Sprite[] drawings  = new Sprite[0];    
+        private const int colorCount = 9;
 
         public Sprite[] GetAbecedaryAssets()
         {
@@ -29,12 +30,12 @@ namespace RehabiliTEA
 
         public Sprite[] GetRandomColorNumberSequence()
         {
-            int         colorIndex      = Random.Range(1, 9);
-            Sprite[]    selectedNumbers = new Sprite[10];
+            int         colorIndex      = Random.Range(1, colorCount);
+            Sprite[]    selectedNumbers = new Sprite[numbers.Length / colorCount];
 
-            for (int i = 0; i < numbers.Length; i += 9)
+            for (int i = 0; i < numbers.Length; i += colorCount)
             {
-                selectedNumbers[i / 9] = numbers[i + colorIndex];
+                selectedNumbers[i / colorCount] = numbers[i + colorIndex];
             }
 
             return selectedNumbers;
@@ -42,12 +43,12 @@ namespace RehabiliTEA
 
         public Sprite[] GetRandomColorAbecedarySequence()
         {
-            int         colorIndex          = Random.Range(1, 9);
-            Sprite[]    selectedAbecedary   = new Sprite[26];
+            int         colorIndex          = Random.Range(1, colorCount);
+            Sprite[]    selectedAbecedary   = new Sprite[abecedary.Length / colorCount];
 
-            for (int i = 0; i < abecedary.Length; i += 9)
+            for (int i = 0; i < abecedary.Length; i += colorCount)
             {
-                selectedAbecedary[i / 9] = abecedary[i + colorIndex];
+                selectedAbecedary[i / colorCount] = abecedary[i + colorIndex];
             }
 
             return selectedAbecedary;
