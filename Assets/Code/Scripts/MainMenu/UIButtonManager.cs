@@ -1,15 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
 namespace RehabiliTEA
 {
     public class UIButtonManager : MonoBehaviour
     {
-        [SerializeField] private Canvas mainCanvas      = null;
-        [SerializeField] private Canvas gameCanvas      = null;
-        [SerializeField] private Canvas configCanvas    = null;
-        [SerializeField] private Canvas profileCanvas   = null;
+        [SerializeField] private Canvas mainCanvas;
+        [SerializeField] private Canvas gameCanvas;
+        [SerializeField] private Canvas configCanvas;
+        [SerializeField] private Canvas profileCanvas;
 
         private void Start()
         {
@@ -38,11 +37,10 @@ namespace RehabiliTEA
 
         public void DisplayConfigCanvas()
         {
-            if (!Profile.GetProfile().HasInternetConnection())
-            {
-                HideAll();
-                configCanvas.gameObject.SetActive(true);
-            }
+            if (Profile.GetProfile().HasInternet) return;
+            
+            HideAll();
+            configCanvas.gameObject.SetActive(true);
         }
 
         public void DisplayProfileCanvas()
@@ -51,20 +49,24 @@ namespace RehabiliTEA
             profileCanvas.gameObject.SetActive(true);
         }
 
-        public void SaveProfileData(UnityEngine.UI.InputField inputField)
+        public void SaveProfileData(InputField idField)
         {
-            int newId = Profile.GetProfile().GetId();
-
-            try 
-            {   
-                newId = int.Parse(inputField.text);
+            try
+            {
+                Profile.GetProfile().ID = int.Parse(idField.text);
             }
             catch (System.FormatException)
             {
-                // pass
+               // pass 
             }
+        }
 
-            Profile.GetProfile().SetId(newId);
+        public void SaveUrlData(InputField urlField) { GreydoAPI.BaseURL = urlField.text; }
+
+        public void TestInternetConnection(Text text)
+        {
+            Profile.GetProfile().CheckInternet();
+            text.text = Profile.GetProfile().HasInternet ? "tengo internet" : "no tengo internet";
         }
     }
 }

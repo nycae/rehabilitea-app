@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using RehabiliTEA;
 using UnityEngine;
 
@@ -7,49 +8,34 @@ namespace HideAndSeek
 {
     public class HideAndSeekSpawnManager : MonoBehaviour
     {
-        [SerializeField]
-        private GameObject      baseObject      = null;
-
-        [SerializeField, Range(0.0f, 10.0f)]
-        private float           minDistance     = 0.0f;
-
-        [SerializeField]
-        private float           upperBound      = 0.0f;
-
-        [SerializeField]
-        private float           lowerBound      = 0.0f;
-
-        [SerializeField]
-        private float           rightBound      = 0.0f;
-
-        [SerializeField]
-        private float           leftBound       = 0.0f;
-
-        private List<Vector3>   spawnPositions  = new List<Vector3>();
+        [SerializeField]                     private GameObject baseObject;
+        [SerializeField, Range(0.0f, 10.0f)] private float      minDistance;
+        [SerializeField]                     private float      upperBound;
+        [SerializeField]                     private float      lowerBound;
+        [SerializeField]                     private float      rightBound;
+        [SerializeField]                     private float      leftBound;
+        
+        private readonly List<Vector3> spawnPositions = new List<Vector3>();
 
 
-        public GameObject Spawn(Sprite sprite)
+        public void Spawn(Sprite sprite)
         {
-            Vector3     objectPosition  = GeneratePosition();
-            GameObject  objectBuffer    = new GameObject("Sprite");
+            var objectPosition = GeneratePosition();
+            var objectBuffer   = new GameObject("Sprite");
 
             spawnPositions.Add(objectPosition);
 
             objectBuffer.AddComponent<SpriteRenderer>();
-            objectBuffer.GetComponent<SpriteRenderer>().sprite  = sprite;
-            objectBuffer.transform.position                     = objectPosition;
-            objectBuffer.transform.localScale                   = new Vector3(0.4f, 0.4f, 0.4f);
-
-            return objectBuffer;
+            objectBuffer.GetComponent<SpriteRenderer>().sprite = sprite;
+            objectBuffer.transform.position                    = objectPosition;
+            objectBuffer.transform.localScale                  = new Vector3(0.4f, 0.4f, 0.4f);
         }
 
-        public GameObject SpawnClickable(Sprite sprite, Vector3 position)
+        public void SpawnClickable(Sprite sprite, Vector3 position)
         {
-            GameObject objectBuffer = Instantiate(baseObject, position, Quaternion.identity);
+            var objectBuffer = Instantiate(baseObject, position, Quaternion.identity);
 
             objectBuffer.GetComponent<ClickableSprite>().GetSpriteRenderer().sprite = sprite;
-
-            return objectBuffer;
         }
 
         public void DestroyAll()
@@ -64,13 +50,17 @@ namespace HideAndSeek
 
         private Vector3 GeneratePosition()
         {
-            Vector3 candidatePosition = new Vector3(Random.Range(leftBound, rightBound), Random.Range(lowerBound, upperBound), 0.0f);
+            while (true)
+            {
+                var candidatePosition = new Vector3(Random.Range(leftBound, rightBound), Random.Range(lowerBound, upperBound), 0.0f);
 
-            foreach (var position in spawnPositions)
-                if (minDistance > Vector3.Distance(candidatePosition, position))
-                    return GeneratePosition();
+                if (spawnPositions.Any(position => minDistance > Vector3.Distance(candidatePosition, position)))
+                {
+                    continue;
+                }
 
-            return candidatePosition;
+                return candidatePosition;
+            }
         }
     }
 }

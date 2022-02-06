@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,49 +6,49 @@ namespace HideAndSeek
 {
     public class UIManager : MonoBehaviour
     {
-        [SerializeField] private Slider                 slider      = null;
-        [SerializeField] private HideAndSeekGameMode    gameMode    = null;
-        [SerializeField] private RehabiliTEA.Player     player      = null;
-        [SerializeField] private CanvasGroup            flashScreen = null;
-        [SerializeField] private GameObject             optionsMenu = null;
-                         private float                  timestamp   = 0f;   
+        [SerializeField] private Slider              slider;
+        [SerializeField] private HideAndSeekGameMode gameMode;
+        [SerializeField] private RehabiliTEA.Player  player;
+        [SerializeField] private CanvasGroup         flashScreen;
+        [SerializeField] private GameObject          optionsMenu;
+        private                  float               timestamp;
 
-        void FlashMessage(bool wasSuccessfull)
+        private void FlashMessage(bool wasSuccessful)
         {
-            flashScreen.GetComponentInChildren<Text>().text = (wasSuccessfull) ? "¡Bien hecho!" : "¡Prueba otra vez!" ;
+            flashScreen.GetComponentInChildren<Text>().text = wasSuccessful ? "¡Bien hecho!" : "¡Prueba otra vez!" ;
             DisplayMessage();
-            StartCoroutine("FadeOutMessage");
+            StartCoroutine(nameof(FadeOutMessage));
         }
 
-        void DisplayMessage()
+        private void DisplayMessage()
         {
             flashScreen.alpha = 1f;
         }
 
-        IEnumerator FadeOutMessage()
+        private IEnumerator FadeOutMessage()
         {
             yield return new WaitForSeconds(1f);
             
-            for (float f = 1f; f > 0; f -= 0.005f)
+            for (var f = 1f; f > 0; f -= 0.005f)
             {
                 flashScreen.alpha = f;
                 yield return new WaitForSeconds(0.005f);
             }
         }
 
-        void ResetTimestamp(GameObject gameObject = null)
+        private void ResetTimestamp(GameObject gameObj = null)
         {
             timestamp = Time.time;
             optionsMenu.SetActive(false);
             slider.gameObject.SetActive(true);
         }
 
-        void HideBar()
+        private void HideBar()
         {
             slider.gameObject.SetActive(false);
         }
 
-        void Start()
+        private void Start()
         {
             player.OnSelect     += ResetTimestamp;
             gameMode.OnGameEnd  += HideBar;
@@ -60,21 +59,19 @@ namespace HideAndSeek
             ResetTimestamp();
         }
 
-        void Update()
+        private void Update()
         {
-            float progres = (Time.time - timestamp) / gameMode.GetSecondsToWait();
+            var progress = (Time.time - timestamp) / gameMode.GetSecondsToWait();
 
-            if(progres < 1f)
+            if(progress < 1f)
             {
-                slider.value = progres;
+                slider.value = progress;
             }
             else
             {
-                if (!optionsMenu.activeSelf)
-                {
-                    optionsMenu.SetActive(true);
-                    slider.gameObject.SetActive(false);
-                }
+                if (optionsMenu.activeSelf) return;
+                optionsMenu.SetActive(true);
+                slider.gameObject.SetActive(false);
             }
         }
     }

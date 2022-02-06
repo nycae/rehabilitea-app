@@ -1,34 +1,33 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Audio;
 
 namespace Piano
 {
     public class SongManager : MonoBehaviour
     {
-        [System.Serializable] private class Song 
-        { 
-            public string       songName        = null;
-            public uint[]       tileSequence    = null;
-            public AudioClip    clip            = null;
+        [Serializable] private class Song 
+        {
+            public string    songName;
+            public uint[]    tileSequence;
+            public AudioClip clip;
         }
 
-        [SerializeField] private Song[]         songs           = null;
-        [SerializeField] private AudioSource    channel         = null;
+        [SerializeField] private Song[]      songs;
+        [SerializeField] private AudioSource channel;
 
-        private Dictionary<string, AudioClip>   songClips       = new Dictionary<string, AudioClip>();
-        private Dictionary<string, uint[]>      songSequences   = new Dictionary<string, uint[]>();
-        private Queue<uint>                     targetSquence   = null;
-        private bool                            isPlayingSong   = false;
-        private string                          targetSong      = null;
+        private readonly Dictionary<string, AudioClip> songClips     = new Dictionary<string, AudioClip>();
+        private readonly Dictionary<string, uint[]>    songSequences = new Dictionary<string, uint[]>();
+        private Queue<uint>                            targetSequence;
+        private bool                                   isPlayingSong;
+        private string                                 targetSong;
 
-        public delegate void                    SongStarted(string songName);
-        public delegate void                    SongPlayed(string songName);
-        public event SongStarted                OnSongBegin;
-        public event SongPlayed                 OnSongEnd;
+        public delegate void     SongStarted(string songName);
+        public delegate void     SongPlayed(string songName);
+        public event SongStarted OnSongBegin;
+        public event SongPlayed  OnSongEnd;
 
-        void Start()
+        private void Start()
         {
             OnSongBegin += StopSong;
             OnSongEnd   += SendSongEndNotification;
@@ -48,65 +47,52 @@ namespace Piano
             songs = null;
         }
 
-        void AttendTile(uint tileID)
+        private void AttendTile(uint tileID)
         {
-            if (isPlayingSong)
-            {
-                if (targetSquence.Count > 0)
-                {   
-                    if (targetSquence.Peek() == tileID)
-                    {
-                        targetSquence.Dequeue();
-                        
-                        if (targetSquence.Count <= 0)
-                        {
-                            isPlayingSong = false;
+            if (!isPlayingSong) return;
+            if (targetSequence.Count <= 0) return;
+            if (targetSequence.Peek() != tileID) return;
+            targetSequence.Dequeue();
 
-                            channel.clip = songClips[targetSong];
-                            channel.Play();
+            if (targetSequence.Count > 0) return;
+            isPlayingSong = false;
 
-                            OnSongEnd.Invoke(targetSong);
-                        }
-                    }
-                }
-            }
+            channel.clip = songClips[targetSong];
+            channel.Play();
+
+            OnSongEnd?.Invoke(targetSong);
         }
 
         public void PlaySong(string songName)
         {
             isPlayingSong   = true;
             targetSong      = songName;
-            targetSquence   = new Queue<uint>(songSequences[songName]);
+            targetSequence   = new Queue<uint>(songSequences[songName]);
 
-            OnSongBegin.Invoke(songName);
+            OnSongBegin?.Invoke(songName);
         }
 
-        public uint GetNextID()
+        public IEnumerable<uint> GetSequence()
         {
-            return (isPlayingSong) ? targetSquence.Peek() : 0;
-        }
-
-        public uint[] GetSequence()
-        {
-            return (isPlayingSong) ? targetSquence.ToArray() : null;
+            return isPlayingSong ? targetSequence.ToArray() : null;
         }
 
         public int GetRemainingNotes()
         {
-            return (isPlayingSong) ? targetSquence.Count : 0;
+            return isPlayingSong ? targetSequence.Count : 0;
         }
 
-        void SendSongEndNotification(string songName)
+        private static void SendSongEndNotification(string songName)
         {
             RehabiliTEA.Profile.GetProfile().PostEvent("Song " + songName + " played");
         }
 
-        void StopSong(string songName)
+        private void StopSong(string songName)
         {
             channel.Stop();
         }
 
-        void StopPlayingSong(string songName)
+        private void StopPlayingSong(string songName)
         {
             isPlayingSong = true;
         }

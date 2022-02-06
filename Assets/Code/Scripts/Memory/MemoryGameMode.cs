@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using RehabiliTEA;
 
 namespace Memory
@@ -34,17 +32,16 @@ namespace Memory
         {
             foreach (var item in difficultySpawnList)
             {
-                if (item.diff == difficulty)
-                {
-                    targetSpawns    = item.cardSpawns;
-                    maxFailedRounds = item.maxFailures;
-                    break;
-                }
+                if (item.diff != difficulty) continue;
+                
+                targetSpawns    = item.cardSpawns;
+                maxFailedRounds = item.maxFailures;
+                break;
             }
 
             spawnManager.SpawnCards(targetSpawns);
 
-            foreach (MemoryCard card in FindObjectsOfType<MemoryCard>())
+            foreach (var card in FindObjectsOfType<MemoryCard>())
             {
                 card.OnSelect += OnCardTurned;
             }
@@ -75,7 +72,7 @@ namespace Memory
         {
             if (secondCard.GetSpriteRenderer().sprite == selectedCard.GetSpriteRenderer().sprite)
             {
-                OnPair.Invoke(true);
+                OnPair?.Invoke(true);
                 audioManager.PlayRandomRewardingSound();
                 DeselectCards();
 
@@ -86,26 +83,26 @@ namespace Memory
             }
             else
             {
-                OnPair.Invoke(false);
-                Invoke("FlipCards", GetWaitTime());
+                OnPair?.Invoke(false);
+                Invoke(nameof(FlipCards), GetWaitTime());
             }
         }
 
-        void FlipCards()
+        private void FlipCards()
         {
-            selectedCard.TurnArround();
-            secondCard.TurnArround();
+            selectedCard.TurnAround();
+            secondCard.TurnAround();
 
             DeselectCards();
         }
 
-        void DeselectCards()
+        private void DeselectCards()
         {
             selectedCard = null;
             selectedCard = null;
         }
 
-        void AttendPair(bool wasSuccessful)
+        private void AttendPair(bool wasSuccessful)
         {
             if (wasSuccessful)
             {
@@ -117,7 +114,7 @@ namespace Memory
             }
         }
 
-        void OnDestroy()
+        private void OnDestroy()
         {
             selectedCard    = null;
             secondCard      = null;
@@ -126,17 +123,7 @@ namespace Memory
             targetPairs     = 0;
         }
 
-        public int GetTargetScore()
-        {
-            return targetPairs;
-        }
-
-        public int GetCurrentScore()
-        {
-            return currentPairs;
-        }
-
-        public float GetWaitTime()
+        private static float GetWaitTime()
         {
             return MemoryCard.TimeToTurn * 1.5f;
         }

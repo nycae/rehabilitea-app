@@ -1,64 +1,60 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 using RehabiliTEA;
+using Random = UnityEngine.Random;
 
 namespace HideAndSeek
 {
     public class HideAndSeekGameMode : GameMode
     {
-        [System.Serializable]
+        [Serializable]
         private class DifficultyAssign
         {
-            public Difficulty           difficulty      = Difficulty.Hard;
-            [Range(1, 10)] public int   rounds          = 0;
-            [Range(1, 20)] public int   figuresToSpawn  = 0;
-            [Range(0, 10)] public int   figureAugment   = 0;
-            [Range(1, 20)] public int   maxRoundsToFail = 0;
-            [Range(1, 20)] public float secondsToWait   = 0f;
-            [Range(0, 10)] public float timeDecrease    = 0f;
+            public Difficulty difficulty = Difficulty.Hard;
+            
+            [Range(1, 10)] public int        rounds;
+            [Range(1, 20)] public int        figuresToSpawn;
+            [Range(0, 10)] public int        figureAugment;
+            [Range(1, 20)] public int        maxRoundsToFail;
+            [Range(1, 20)] public float      secondsToWait;
+            [Range(0, 10)] public float      timeDecrease;
         }
 
-        [SerializeField]
-        private DifficultyAssign[]      difficulties    = null;
+        [SerializeField] private DifficultyAssign[]      difficulties;
+        [SerializeField] private AssetManager            assetManager;
+        [SerializeField] private HideAndSeekSpawnManager spawnManager;
 
-        [SerializeField]
-        private AssetManager            assetManager    = null;
+        private Sprite[] levelSprites;
+        private Sprite[] selectables;
+        private Sprite   targetSprite;
+        private float    secondsToWait;
+        private int      rounds;
+        private int      figuresToSpawn;
+        private int      figuresAugment;
+        private float    timeDecrease;
 
-        [SerializeField]
-        private HideAndSeekSpawnManager spawnManager    = null;
-
-        private Sprite[]                levelSprites    = null;
-        private Sprite[]                selectables     = null;
-        private Sprite                  targetSprite    = null;
-        private float                   secondsToWait   = 0f;
-        private int                     rounds          = 0;
-        private int                     figuresToSpawn  = 0;
-        private int                     figuresAugment  = 0;
-        private float                   timeDecrease    = 0;
-        public delegate void            NewRound(bool wasSuccessfull);
-        public event NewRound           OnNewRound;
+        public delegate void  NewRound(bool wasSuccessful);
+        public event NewRound OnNewRound;
 
         private void Start()
         {
-            foreach (var assignament in difficulties)
+            foreach (var assignment in difficulties)
             {
-                if (assignament.difficulty == this.difficulty)
-                {
-                    rounds          = assignament.rounds;
-                    timeDecrease    = assignament.timeDecrease;
-                    secondsToWait   = assignament.secondsToWait;
-                    figuresAugment  = assignament.figureAugment;
-                    figuresToSpawn  = assignament.figuresToSpawn;
-                    maxFailedRounds = assignament.maxRoundsToFail;
+                if (assignment.difficulty != difficulty) continue;
 
-                    break;
-                }
+                rounds          = assignment.rounds;
+                timeDecrease    = assignment.timeDecrease;
+                secondsToWait   = assignment.secondsToWait;
+                figuresAugment  = assignment.figureAugment;
+                figuresToSpawn  = assignment.figuresToSpawn;
+                maxFailedRounds = assignment.maxRoundsToFail;
+
+                break;
             }
-            difficulties                = null; // Free memory, may cause a memory leak, do some research later.
 
-            player.OnSelect            += Evaluate;
-            OnNewRound                 += PrepareRound;
+            difficulties    = null; // Free memory, may cause a memory leak, do some research later.
+            player.OnSelect += Evaluate;
+            OnNewRound      += PrepareRound;
 
             StartRound();
         }
@@ -71,12 +67,12 @@ namespace HideAndSeek
             player.Block(secondsToWait);
 
             GenerateSequence();
-            Invoke("HideTarget", secondsToWait);
+            Invoke(nameof(HideTarget), secondsToWait);
         }
 
-        private void PrepareRound(bool wasSuccessfull)
+        private void PrepareRound(bool wasSuccessful)
         {
-            if (wasSuccessfull) // User was right.
+            if (wasSuccessful) // User was right.
             {
                 rounds--;
 
@@ -117,12 +113,12 @@ namespace HideAndSeek
                     selectables     = assetManager.GetRandomSprites(3);
                     levelSprites    = assetManager.GetRandomSprites(figuresToSpawn);
                     break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
-            foreach (var sprite in levelSprites)
-            {
-                spawnManager.Spawn(sprite);
-            }
+            foreach (var sprite in levelSprites)  spawnManager.Spawn(sprite);
 
             targetSprite = levelSprites[Random.Range(0, levelSprites.Length - 1)];
         }
@@ -130,18 +126,17 @@ namespace HideAndSeek
         private void Evaluate(GameObject sprite)
         {
             audioManager.PlayEnvironmentSound("Selection");
-            OnNewRound.Invoke(sprite.GetComponent<SpriteRenderer>().sprite == targetSprite);
+            OnNewRound?.Invoke(sprite.GetComponent<SpriteRenderer>().sprite == targetSprite);
         }
 
         private void HideTarget()
         {
             foreach (var spriteRenderer in FindObjectsOfType<SpriteRenderer>())
             {
-                if (spriteRenderer.sprite == targetSprite)
-                {
-                    spriteRenderer.enabled = false;
-                    break;
-                }
+                if (spriteRenderer.sprite != targetSprite) continue;
+                
+                spriteRenderer.enabled = false;
+                break;
             }
 
             SpawnOptions();
@@ -149,13 +144,13 @@ namespace HideAndSeek
 
         private void SpawnOptions()
         {
-            int     j               = 0;
-            bool    isTargetVisible = false;
-            Vector3 startingPoint   = new Vector3(-4.3f, -3.7f, 0.0f);
+            var j               = 0;
+            var isTargetVisible = false;
+            var startingPoint   = new Vector3(-4.3f, -3.7f, 0.0f);
 
-            for (int i = 0; i < 4; i++)
+            for (var i = 0; i < 4; i++)
             {
-                Vector3 spawnPoint  = startingPoint;
+                var spawnPoint  = startingPoint;
                 spawnPoint.x        -= -2.7666666666666666666666666666667f * i;
 
                 if (i >= 3 && !isTargetVisible)

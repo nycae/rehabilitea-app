@@ -1,40 +1,30 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using RehabiliTEA;
 
 namespace Memory
 {
     public class MemoryPlayer : Player
     {
-        void Start()
+        private void Start()
         {
             //SecondsWhenBlocked      = MemoryCard.TimeToTurn * 1.5f;
             FindObjectOfType<MemoryGameMode>().OnPair  += OnPair;
         }
 
-        private void OnPair(bool wasSucessfull)
+        private void OnPair(bool wasSuccessful)
         {
-            if (!wasSucessfull)
-            {
-                Block(MemoryCard.TimeToTurn * 1.5f);
-            }
+            if (!wasSuccessful) Block(MemoryCard.TimeToTurn * 1.5f);
         }
 
         protected override void CastRay()
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+            if (Camera.main is null) return;
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out hit))
-            {
-                MemoryCard card = hit.collider.gameObject.GetComponent<MemoryCard>();
-
-                if (card)
-                {
-                    card.Select();
-                }
-            }
+            if (!Physics.Raycast(ray, out var hit)) return;
+            var card = hit.collider.gameObject.GetComponent<MemoryCard>();
+            
+            if (card) card.Select();
         }
     }
 }

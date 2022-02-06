@@ -13,21 +13,19 @@ namespace RehabiliTEA
             public AudioClip    value;
         }
 
-        [SerializeField] private SoundPair[]    otherSounds             = null;
-        [SerializeField] private AudioClip[]    encouragementSounds     = null;
-        [SerializeField] private AudioClip[]    rewardingSounds         = null;
-        [SerializeField] private AudioClip      positiveEndgameSound    = null;
-        [SerializeField] private AudioClip      negativeEndgameSound    = null;
-        [SerializeField] private AudioSource    ambientAudioSource      = null;
-        [SerializeField] private AudioSource    narratorAudioSource     = null;
-        private Dictionary<string, AudioClip>   environmentSounds       = new Dictionary<string, AudioClip>();
+        [SerializeField] private SoundPair[] otherSounds;
+        [SerializeField] private AudioClip[] encouragementSounds;
+        [SerializeField] private AudioClip[] rewardingSounds;
+        [SerializeField] private AudioClip   positiveEndgameSound;
+        [SerializeField] private AudioClip   negativeEndgameSound;
+        [SerializeField] private AudioSource ambientAudioSource;
+        [SerializeField] private AudioSource narratorAudioSource;
+        private readonly Dictionary<string, AudioClip> environmentSounds =
+            new Dictionary<string, AudioClip>();
 
         private void Awake()
         {
-            foreach (var pair in otherSounds)
-            {
-                environmentSounds.Add(pair.key, pair.value);
-            }
+            foreach (var pair in otherSounds) environmentSounds.Add(pair.key, pair.value);
 
             otherSounds = null;
 

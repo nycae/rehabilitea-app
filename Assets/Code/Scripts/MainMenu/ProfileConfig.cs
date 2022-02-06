@@ -6,9 +6,9 @@ namespace RehabiliTEA
 {
     public class ProfileConfig : MonoBehaviour
     {
-        private void SetDifficulty(Difficulty newDifficulty)
+        private static void SetDifficulty(Difficulty newDifficulty)
         {
-            Profile.GetProfile().SetDifficulty(newDifficulty);
+            Profile.GetProfile().TaskDifficulty = newDifficulty;
         }
 
         public void SetDifficultyEasy()

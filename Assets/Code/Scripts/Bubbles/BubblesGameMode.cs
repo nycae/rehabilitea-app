@@ -10,94 +10,93 @@ namespace RehabiliTEA.Bubbles
         [System.Serializable]
         private class DifficultyAssign
         {
-            public Difficulty           difficulty          = 0;
-            [Range(0, 20)] public int   distractionCount    = 0;
-            [Range(0, 20)] public int   maxFailures         = 0;
+            public Difficulty difficulty = 0;
+            [Range(0, 20)]
+            public int distractionCount;
+            [Range(0, 20)]
+            public int maxFailures;
         }
 
         [SerializeField]
-        private DifficultyAssign[]      difficulties        = null;
+        private DifficultyAssign[]      difficulties;
 
         [SerializeField]
-        private BubblesSpawnManager     spawnManager        = null;
+        private BubblesSpawnManager     spawnManager;
 
         [SerializeField, Range(0.1f, 10.0f)]
-        private float                   spawnDelay          = 0.5f;
+        private float spawnDelay = 0.5f;
 
-        private Queue<Sprite>           sequence            = null;
-        private int                     hits                = 0;
-        private int                     spawnedSprites      = 0;
-        private int                     bubbleCount         = 0;
-        private int                     distractionCount    = 0;
+        private Queue<Sprite> sequence;
+        private int           hits;
+        private int           spawnedSprites;
+        private int           bubbleCount;
+        private int           distractionCount;
 
-        public delegate void            Score();
-        public delegate void            Fail();
+        public delegate void Score();
+        public delegate void Fail();
 
-        public static event Score       OnScore;
-        public static event Fail        OnFail;
+        public static event Score OnScore;
+        public static event Fail  OnFail;
 
 
         private void Start()
         {
             foreach (var difficultyAssign in difficulties)
             {
-                if (difficultyAssign.difficulty == this.difficulty)
-                {
-                    this.distractionCount   = difficultyAssign.distractionCount;
-                    this.maxFailedRounds    = difficultyAssign.maxFailures;
+                if (difficultyAssign.difficulty != this.difficulty) continue;
+                
+                distractionCount = difficultyAssign.distractionCount;
+                maxFailedRounds  = difficultyAssign.maxFailures;
 
-                    break;
-                }
+                break;
             }
 
-            difficulties    = null;
-            sequence        = new Queue<Sprite>(spawnManager.GenerateSpriteSequence(this.difficulty, distractionCount));
-            bubbleCount     = sequence.Count;
+            difficulties = null;
+            sequence = new Queue<Sprite>(
+                    spawnManager.GenerateSpriteSequence(difficulty, distractionCount));
+            bubbleCount = sequence.Count;
 
             player.OnSelect += AttendBubble;
             OnScore         += AddScore;
             OnFail          += AddMiss;
 
-            Invoke("SpawnNextSprite", spawnDelay);
+            Invoke(nameof(SpawnNextSprite), spawnDelay);
         }
 
-        void AttendBubble(GameObject bubble)
+        private void AttendBubble(GameObject bubble)
         {
             if (sequence.Peek() == bubble.GetComponent<SpriteRenderer>().sprite)
             {
                 audioManager.PlayEnvironmentSound("BubbleExplosion");
                 Destroy(bubble);
                 sequence.Dequeue();
-                OnScore.Invoke();
+                OnScore?.Invoke();
 
-                if (hits >= bubbleCount)
-                {
-                    FinishGame();
-                }
+                if (hits >= bubbleCount) FinishGame();
             }
             else
             {
-                OnFail.Invoke();
+                OnFail?.Invoke();
             }
         }
 
-        void SpawnNextSprite()
+        private void SpawnNextSprite()
         {
             spawnManager.SpawnNextSprite();
             spawnedSprites++;
 
             if (spawnedSprites < bubbleCount + distractionCount)
             {
-                Invoke("SpawnNextSprite", spawnDelay);
+                Invoke(nameof(SpawnNextSprite), spawnDelay);
             }
         }
 
-        void AddScore()
+        private void AddScore()
         {
             hits++;
         }
 
-        void AddMiss()
+        private void AddMiss()
         {
             failedRounds++;
         }

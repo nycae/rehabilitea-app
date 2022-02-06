@@ -19,29 +19,30 @@ namespace RehabiliTEA
 
         private void Awake()
         {
-            player          = FindObjectOfType<Player>();
-            audioManager    = FindObjectOfType<AudioManager>();
-            difficulty      = RehabiliTEA.Profile.GetProfile().GetDifficulty();
-            OnGameEnd      += CleanupGame;
+            player       = FindObjectOfType<Player>();
+            audioManager = FindObjectOfType<AudioManager>();
+            difficulty   = Profile.GetProfile().TaskDifficulty;
+            OnGameEnd   += CleanupGame;
 
             Assert.IsNotNull(player);
             Assert.IsNotNull(audioManager);
 
             if (messageScreen) messageScreen.SetActive(false);
-            Profile.GetProfile().PostEvent("GameStart");
+            
+            StartCoroutine(Profile.GetProfile().PostEvent("GameStart"));
         }
 
         protected void FinishGame()
         {
-            OnGameEnd.Invoke();
+            OnGameEnd?.Invoke();
         }
 
         private void CleanupGame()
         {
+            StartCoroutine(Profile.GetProfile().PostScore(failedRounds, maxFailedRounds));
+            
             if (failedRounds < maxFailedRounds)
             {
-                if (difficulty < Difficulty.Hard) difficulty++;
-
                 PlayGoodEndAnimation();
                 audioManager.PlayPositiveEndgameSound();
                 Profile.GetProfile().UpdateDifficulty();
@@ -53,38 +54,31 @@ namespace RehabiliTEA
                 audioManager.PlayNegativeEndgameSound();
                 Profile.GetProfile().PostEvent("GameFailed");
             }
-
-            Invoke("LoadMainMenu", 5f);
+            
+            Invoke(nameof(LoadMainMenu), 5f);
         }
 
         private void PlayGoodEndAnimation()
         {
-            if (messageScreen)
-            {
-                messageScreen.GetComponentInChildren<Text>().text = 
-                    System.String.Format("¡Muy bien, sigue así!\nPuntuación: {0} de {1} fallos", failedRounds, maxFailedRounds);
-                messageScreen.SetActive(true);
-            }
+            if (!messageScreen) return;
+            var message = "¡Muy bien, sigue así!\n" + 
+                          $"Puntuación: {failedRounds} de {maxFailedRounds} fallos";
+            
+            messageScreen.GetComponentInChildren<Text>().text = message;
+            messageScreen.SetActive(true);
         }
 
         private void PlayBadEndAnimation()
         {
-            if (messageScreen)
-            {
-                messageScreen.GetComponentInChildren<Text>().text = 
-                    System.String.Format("¡Puedes mejorar, vuelve a intentarlo!\nPuntuación: {0} de {1} fallos", failedRounds, maxFailedRounds);
-                messageScreen.SetActive(true);
-            }
+            if (!messageScreen) return;
+            var message = "¡Puedes mejorar, vuelve a intentarlo!\n"+
+                          $"Puntuación:{failedRounds} de {maxFailedRounds} fallos";
+
+            messageScreen.GetComponentInChildren<Text>().text = message;
+            messageScreen.SetActive(true);
         }
 
-        private void LoadMainMenu()
-        {
-            SceneManager.LoadScene("MainMenu"); 
-        }
-
-        public Difficulty GetDifficulty()
-        {
-            return difficulty;
-        }
+        private void LoadMainMenu()       { SceneManager.LoadScene("MainMenu"); }
+        public Difficulty GetDifficulty() { return difficulty; }
     }
 }

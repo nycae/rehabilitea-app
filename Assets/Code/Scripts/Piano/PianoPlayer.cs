@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using RehabiliTEA;
+using Debug = System.Diagnostics.Debug;
 
 namespace Piano
 {
@@ -9,18 +10,14 @@ namespace Piano
     {
         protected override void CastRay()
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+            Debug.Assert(Camera.main != null, "Camera.main != null");
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out hit))
-            {
-                Tile tile = hit.collider.gameObject.GetComponent<Tile>();
+            if (!Physics.Raycast(ray, out var hit)) return;
+            var tile = hit.collider.gameObject.GetComponent<Tile>();
 
-                if (tile)
-                {
-                    tile.Play();
-                }
-            }
+            if (!tile) return;
+            tile.Play();
         }
     }
 }

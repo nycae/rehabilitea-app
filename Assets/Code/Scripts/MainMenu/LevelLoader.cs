@@ -9,15 +9,12 @@ namespace RehabiliTEA
 
         public void LoadLevel()
         {
-            if (!Profile.GetProfile().HasInternetConnection())
-            {
-                SceneManager.LoadScene(levelToLoad);
-            }
+            if (!Profile.GetProfile().HasInternet) SceneManager.LoadScene(levelToLoad);
         }
 
         public void SetNextLevel(string nextLevel)
         {
-            if (Profile.GetProfile().HasInternetConnection())
+            if (Profile.GetProfile().HasInternet)
             {
                 Profile.GetProfile().LoadDifficulty(nextLevel);
                 SceneManager.LoadScene(nextLevel);

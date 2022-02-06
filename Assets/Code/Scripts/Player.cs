@@ -1,19 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace RehabiliTEA
 {
     public class Player : MonoBehaviour
     {
-        [SerializeField]
-        private float           cadency             = 10f;
-        private bool            isBlocked           = false;
-
+        private const float     Cadence   = 10f;
+        private       bool      isBlocked = false;
+        
         public delegate void    Select(GameObject sprite);
         public event Select     OnSelect;
 
-        public void Block()
+        private void Block()
         {
             isBlocked = true;
         }
@@ -21,7 +18,7 @@ namespace RehabiliTEA
         public void Block(float timeBlocked)
         {
             isBlocked = true;
-            Invoke("Free", timeBlocked);
+            Invoke(nameof(Free), timeBlocked);
         }
 
         public void Free()
@@ -31,32 +28,22 @@ namespace RehabiliTEA
 
         private void Update()
         {
-            if (isBlocked)  
-            {
-                return;
-            }
-            else
-            {
-                if (Input.GetMouseButton(0)) CastRay();
-            }
+            if (isBlocked) return;
+            if (Input.GetMouseButton(0)) CastRay();
         }
 
         protected virtual void CastRay()
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit))
+            if (!(Camera.main is null))
             {
-                SpriteRenderer sprite = hit.collider.gameObject.GetComponent<SpriteRenderer>();
-
-                if (sprite)
-                {
-                    OnSelect.Invoke(hit.collider.gameObject);
-                    Block();
-                    Invoke("Free", 1/cadency);
-                }
+                var        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (!Physics.Raycast(ray, out var hit)) return;
+                var sprite = hit.collider.gameObject.GetComponent<SpriteRenderer>();
+                if (!sprite) return;
+                OnSelect?.Invoke(hit.collider.gameObject);
             }
+            Block();
+            Invoke(nameof(Free), 1/Cadence);
         }
     }
 }

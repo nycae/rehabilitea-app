@@ -1,17 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 namespace Piano
 {
     public class UICanvas : MonoBehaviour
     {
-        [SerializeField] private Canvas         songCanvas      = null;
-        [SerializeField] private Canvas         buttonCanvas    = null;
-        [SerializeField] private SongManager    songManager     = null;
+        [SerializeField] private Canvas      songCanvas;
+        [SerializeField] private Canvas      buttonCanvas;
+        [SerializeField] private SongManager songManager;
 
-        void Start()
+        private void Start()
         {
             HideSongCanvas();
         }
